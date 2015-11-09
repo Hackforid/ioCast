@@ -13,7 +13,7 @@ import java.util.*
 /**
  * Created by kleist on 15/11/5.
  */
-public class RssParser : AnkoLogger {
+public class RssParser {
 
     public fun parse(rss : Reader) : PodcastRSS? {
         val parser = Xml.newPullParser()
@@ -50,7 +50,6 @@ public class RssParser : AnkoLogger {
     }
 
     fun readChannel(parser : XmlPullParser) : PodcastRSS {
-        debug("read channel")
         parser.require(XmlPullParser.START_TAG, null, "channel")
 
         val podcast = PodcastRSS()

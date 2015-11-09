@@ -1,0 +1,17 @@
+package com.smilehacker.iocast.act
+
+import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
+import com.smilehacker.iocast.R
+
+/**
+ * Created by kleist on 15/11/6.
+ */
+class PodcastDetailActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.act_podcast_detail)
+        //val frg = supportFragmentManager.findFragmentById(R.id.frg_detail)
+    }
+}
