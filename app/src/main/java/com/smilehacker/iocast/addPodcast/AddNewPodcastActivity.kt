@@ -1,7 +1,6 @@
-package com.smilehacker.iocast.act
+package com.smilehacker.iocast.addPodcast
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.support.v7.app.AppCompatActivity
 import com.smilehacker.iocast.R
 
@@ -14,6 +13,4 @@ class AddNewPodcastActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.act_new_podcast)
     }
-
-
 }

@@ -9,7 +9,7 @@ import java.math.BigInteger
  * Created by kleist on 15/11/8.
  */
 
-public inline fun createParcel<reified T : Parcelable>(crossinline createFromParcel: (Parcel) -> T?): Parcelable.Creator<T> =
+public inline fun <reified T : Parcelable> createParcel(crossinline createFromParcel: (Parcel) -> T?): Parcelable.Creator<T> =
         object : Parcelable.Creator<T> {
             override fun createFromParcel(source: Parcel): T? = createFromParcel(source)
             override fun newArray(size: Int): Array<out T?> = arrayOfNulls(size)
@@ -17,7 +17,7 @@ public inline fun createParcel<reified T : Parcelable>(crossinline createFromPar
 
 public fun Parcel.writeBigInteger(bi: BigInteger) {
     with (bi.toByteArray()) {
-        writeInt(size())
+        writeInt(size)
         writeByteArray(this)
     }
 }

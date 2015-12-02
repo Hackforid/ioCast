@@ -28,5 +28,4 @@
         android:text="ADD"
         android:textColor="@android:color/white"
         />
-
 </RelativeLayout>

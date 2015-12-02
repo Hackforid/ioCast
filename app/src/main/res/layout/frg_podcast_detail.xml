@@ -8,21 +8,60 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        tools:background="@android:color/darker_gray"
+        tools:layout_height="300dp"
         >
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/iv_img"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:viewAspectRatio="1.33"
+            app:viewAspectRatio="1.66"
             />
 
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
+            android:layout_alignBottom="@id/iv_img"
+            android:layout_margin="10dp"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:textColor="@android:color/white"
             tools:text="IT公论"
             />
     </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        >
+
+        <TextView
+            android:id="@+id/tv_author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            tools:text="IPN"
+            />
+
+        <TextView
+            android:id="@+id/tv_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/tv_author"
+            android:layout_marginLeft="12dp"
+            android:singleLine="true"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            />
+
+    </RelativeLayout>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_items"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        />
 
 </LinearLayout>

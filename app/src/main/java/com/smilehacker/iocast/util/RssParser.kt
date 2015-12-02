@@ -1,6 +1,7 @@
 package com.smilehacker.iocast.util
 
 import android.util.Xml
+import com.smilehacker.iocast.model.PodcastItem
 import com.smilehacker.iocast.model.PodcastRSS
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.debug
@@ -53,7 +54,7 @@ public class RssParser {
         parser.require(XmlPullParser.START_TAG, null, "channel")
 
         val podcast = PodcastRSS()
-        podcast.items = ArrayList<PodcastRSS.Item>()
+        podcast.items = ArrayList<PodcastItem>()
         while(parser.next() != XmlPullParser.END_TAG) {
             if (parser.eventType != XmlPullParser.START_TAG) {
                 continue
@@ -84,8 +85,8 @@ public class RssParser {
         return podcast
     }
 
-    fun readItem(parser : XmlPullParser) : PodcastRSS.Item {
-        val item = PodcastRSS.Item()
+    fun readItem(parser : XmlPullParser) : PodcastItem {
+        val item = PodcastItem()
         parser.require(XmlPullParser.START_TAG, null, "item")
         while(parser.next() != XmlPullParser.END_TAG) {
             if (parser.eventType != XmlPullParser.START_TAG) {
@@ -96,7 +97,7 @@ public class RssParser {
                 "description" -> item.description = parser.nextText()
                 "link" -> item.link = parser.nextText()
                 "author" -> item.author = parser.nextText()
-                "pubDate" -> item.pubData = parser.nextText()
+                "pubDate" -> item.setPubDateByRssDate(parser.nextText())
                 "itunes:duration" -> item.duration = parser.nextText().toInt()
                 "enclosure" -> {
                     item.fileType = parser.getAttributeValue(null, "type")

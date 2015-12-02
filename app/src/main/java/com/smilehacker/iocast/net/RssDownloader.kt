@@ -12,7 +12,6 @@ import java.util.concurrent.TimeUnit
 class RssDownloader {
     fun download(url : String) : String? {
         val client = OkHttpClient()
-        Log.i("aaa", url)
         client.setConnectTimeout(30, TimeUnit.SECONDS)
         client.setWriteTimeout(30, TimeUnit.SECONDS);
         client.setReadTimeout(30, TimeUnit.SECONDS);

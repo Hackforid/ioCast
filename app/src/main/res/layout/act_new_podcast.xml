@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:name="com.smilehacker.iocast.frg.AddNewPodcastFragment"
+    android:name="com.smilehacker.iocast.addPodcast.AddNewPodcastFragment"
     tools:layout="@layout/frg_new_podcast"
     >
 </fragment>

@@ -15,6 +15,16 @@
         android:theme="@style/AppTheme"
         android:name=".App"
         >
+
+        <meta-data android:name="AA_DB_NAME" android:value="iocast.db" />
+        <meta-data android:name="AA_DB_VERSION" android:value="1" />
+        <meta-data android:name="AA_SERIALIZERS"
+                   android:value="com.smilehacker.iocast.util.db.DateTimeSerializer" />
+        <meta-data
+            android:name="AA_MODELS"
+            android:value="com.smilehacker.iocast.model.PodcastRSS,
+                           com.smilehacker.iocast.model.PodcastItem" />
+
         <activity
             android:name=".act.MainActivity"
             >
@@ -24,7 +34,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".act.AddNewPodcastActivity"/>
+            android:name=".addPodcast.AddNewPodcastActivity"/>
         <activity
             android:name=".act.PodcastDetailActivity"/>
     </application>

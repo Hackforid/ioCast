@@ -12,6 +12,5 @@ class PodcastDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.act_podcast_detail)
-        //val frg = supportFragmentManager.findFragmentById(R.id.frg_detail)
     }
 }
