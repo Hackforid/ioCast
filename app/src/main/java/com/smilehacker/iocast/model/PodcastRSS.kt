@@ -83,7 +83,7 @@ public class PodcastRSS() : Model(), Parcelable {
         }
     }
 
-    fun saveWithItems() {
+    fun saveWithItems() : PodcastRSS {
         ActiveAndroid.beginTransaction()
         this.save()
         if (items != null) {
@@ -94,6 +94,7 @@ public class PodcastRSS() : Model(), Parcelable {
         }
         ActiveAndroid.setTransactionSuccessful()
         ActiveAndroid.endTransaction()
+        return this
     }
 }
 

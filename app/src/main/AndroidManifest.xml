@@ -34,7 +34,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".addPodcast.AddNewPodcastActivity"/>
+            android:name=".newPodcast.NewPodcastActivity"/>
         <activity
             android:name=".act.PodcastDetailActivity"/>
     </application>

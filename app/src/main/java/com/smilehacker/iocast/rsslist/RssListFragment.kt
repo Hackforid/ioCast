@@ -11,13 +11,16 @@ import butterknife.bindView
 import com.smilehacker.iocast.R
 import com.smilehacker.iocast.base.mvp.MVPFragment
 import com.smilehacker.iocast.model.PodcastRSS
+import com.smilehacker.iocast.newPodcast.NewPodcastActivity
+import com.smilehacker.iocast.util.DLog
 import org.jetbrains.anko.onClick
+import org.jetbrains.anko.support.v4.startActivity
 
 
 /**
  * Created by kleist on 15/11/4.
  */
-public class RssListFragment : MVPFragment<IRssListPresenter, RssListViewer>(), RssListViewer {
+public class RssListFragment : MVPFragment<RssListPresenter, RssListViewer>(), RssListViewer {
 
 
     val mRvItems by bindView<RecyclerView>(R.id.rv_items)
@@ -26,7 +29,8 @@ public class RssListFragment : MVPFragment<IRssListPresenter, RssListViewer>(), 
     val mRssAdapter by lazy { RssAdapter(context) }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater?.inflate(R.layout.frg_podcast_list, container, false);
+        DLog.d("onCreateView")
+        val view = inflater?.inflate(R.layout.rsslist_frg, container, false);
         return view;
     }
 
@@ -44,7 +48,7 @@ public class RssListFragment : MVPFragment<IRssListPresenter, RssListViewer>(), 
         mRvItems.adapter = mRssAdapter
 
         mBtnNew.onClick {
-            //presenter.addPodcast()
+            presenter.addPodcast()
         }
 
     }
@@ -53,8 +57,11 @@ public class RssListFragment : MVPFragment<IRssListPresenter, RssListViewer>(), 
         mRssAdapter.setList(items)
     }
 
-    override fun createPresenter(): IRssListPresenter {
-        return RssListPresenter()
+    override fun createPresenter(): RssListPresenter {
+        return RssListPresenterImp()
     }
 
+    override fun jumpToAddNewPodcastView() {
+        startActivity<NewPodcastActivity>()
+    }
 }

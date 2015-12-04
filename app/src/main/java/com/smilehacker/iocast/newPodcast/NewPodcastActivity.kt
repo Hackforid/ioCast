@@ -1,4 +1,4 @@
-package com.smilehacker.iocast.addPodcast
+package com.smilehacker.iocast.newPodcast
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -7,7 +7,7 @@ import com.smilehacker.iocast.R
 /**
  * Created by kleist on 15/11/4.
  */
-class AddNewPodcastActivity : AppCompatActivity() {
+class NewPodcastActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
