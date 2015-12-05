@@ -42,6 +42,10 @@ class RssAdapter(val ctx : Context) : RecyclerView.Adapter<RssAdapter.ViewHolder
         return mRssList.size
     }
 
+    private fun calculateGridHeight() : Int {
+        return 0
+    }
+
 
     class ViewHolder : RecyclerView.ViewHolder {
 
