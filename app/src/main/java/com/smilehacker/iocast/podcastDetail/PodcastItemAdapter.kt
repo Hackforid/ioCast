@@ -1,4 +1,4 @@
-package com.smilehacker.iocast.adapter
+package com.smilehacker.iocast.podcastDetail
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
@@ -17,7 +17,7 @@ import java.util.*
 public class PodcastItemAdapter(val ctx : Context) : RecyclerView.Adapter<PodcastItemAdapter.ViewHolder>() {
 
     private val mItems : ArrayList<PodcastItem> by lazy { ArrayList<PodcastItem>() }
-    private val mLayoutInflater : LayoutInflater by lazy {LayoutInflater.from(ctx)}
+    private val mLayoutInflater : LayoutInflater by lazy { LayoutInflater.from(ctx)}
 
     public var items : ArrayList<PodcastItem>?
                 get() = mItems

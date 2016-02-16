@@ -15,23 +15,37 @@ import java.util.*
 /**
  * Created by kleist on 15/11/5.
  */
-@Table(name = "podcast")
+@Table(name = PodcastRSS.DB.TABLENAME)
 public class PodcastRSS() : Model(), Parcelable {
 
-    @Column(name = "title")
+    object DB {
+        const val TABLENAME = "podcast"
+        const val TITLE = "title"
+        const val LINK = "link"
+        const val DESC = "description"
+        const val LANG = "language"
+        const val IMAGE = "image"
+        const val AUTHOR = "author"
+        const val CATEGORY = "category"
+        const val SUBSCRIBE = "subscribe"
+    }
+
+    @Column(name = DB.TITLE)
     var title : String = ""
-    @Column(name = "link", index = true)
+    @Column(name = DB.LINK, index = true)
     var link : String = ""
-    @Column(name = "description")
+    @Column(name = DB.DESC)
     var description : String = ""
-    @Column(name = "language")
+    @Column(name = DB.LANG)
     var language : String = ""
-    @Column(name = "image")
+    @Column(name = DB.IMAGE)
     var image : String = ""
-    @Column(name = "author")
+    @Column(name = DB.AUTHOR)
     var author : String = ""
-    @Column(name = "category")
+    @Column(name = DB.CATEGORY)
     var category : String = ""
+    @Column(name = DB.SUBSCRIBE)
+    var subscribed: Boolean = false
 
     var items : ArrayList<PodcastItem>? = null
 
@@ -63,12 +77,16 @@ public class PodcastRSS() : Model(), Parcelable {
     }
 
     companion object {
+
+        // for parcelable
         val CREATOR = createParcel { PodcastRSS(it) }
 
+        // static method
         fun parse(rssXml : String) : PodcastRSS? {
             return RssParser().parse(rssXml)
         }
 
+        // DB function
         fun getWithItems(id : Long) : PodcastRSS? {
             val podcast = Select().from(PodcastRSS::class.java)
                     .where("Id=?", id)
@@ -77,10 +95,22 @@ public class PodcastRSS() : Model(), Parcelable {
             return podcast
         }
 
-        fun getAll() : List<PodcastRSS> {
-            return Select().from(PodcastRSS::class.java)
-                    .execute<PodcastRSS>()
+        fun getAll(subscribed : Boolean? = null) : List<PodcastRSS> {
+            if (subscribed != null) {
+                return Select().from(PodcastRSS::class.java)
+                        .where("${DB.SUBSCRIBE} = ?", subscribed)
+                        .execute<PodcastRSS>()
+            } else{
+                return Select().from(PodcastRSS::class.java)
+                        .execute<PodcastRSS>()
+            }
         }
+
+    }
+
+    fun subscribe(subscribed : Boolean = true) {
+        this.subscribed = true
+        this.save()
     }
 
     fun saveWithItems() : PodcastRSS {

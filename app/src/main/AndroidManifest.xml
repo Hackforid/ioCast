@@ -36,7 +36,9 @@
         <activity
             android:name=".newPodcast.NewPodcastActivity"/>
         <activity
-            android:name=".act.PodcastDetailActivity"/>
+            android:name=".podcastDetail.PodcastDetailActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
     </application>
 
 

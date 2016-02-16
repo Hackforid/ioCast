@@ -1,4 +1,4 @@
-package com.smilehacker.iocast.act
+package com.smilehacker.iocast.podcastDetail
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity

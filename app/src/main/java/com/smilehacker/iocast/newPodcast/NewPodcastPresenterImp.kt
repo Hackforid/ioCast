@@ -22,6 +22,7 @@ class NewPodcastPresenterImp : NewPodcastPresenter() {
 
                         try {
                             rssStr = RssDownloader().download(prepareURL(url))
+                            DLog.d(rssStr)
                         } catch (e : Exception) {
                             t?.onError(e)
                         }

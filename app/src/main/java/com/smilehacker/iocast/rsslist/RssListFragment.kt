@@ -1,5 +1,6 @@
 package com.smilehacker.iocast.rsslist
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -8,10 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import butterknife.bindView
+import com.smilehacker.iocast.Constants
 import com.smilehacker.iocast.R
 import com.smilehacker.iocast.base.mvp.MVPFragment
 import com.smilehacker.iocast.model.PodcastRSS
 import com.smilehacker.iocast.newPodcast.NewPodcastActivity
+import com.smilehacker.iocast.podcastDetail.PodcastDetailActivity
 import com.smilehacker.iocast.util.DLog
 import org.jetbrains.anko.onClick
 import org.jetbrains.anko.support.v4.startActivity
@@ -43,6 +46,13 @@ public class RssListFragment : MVPFragment<RssListPresenter, RssListViewer>(), R
     fun init() {
 
         val gridLayoutManager = GridLayoutManager(context, 3)
+        mRssAdapter.setGridHorizontalCount(3)
+
+        mRssAdapter.setCallback(object : RssAdapter.RssListCallback {
+            override fun onItemClick(rss: PodcastRSS) {
+                jumpToPodcastView(rss.id)
+            }
+        })
 
         mRvItems.layoutManager = gridLayoutManager
         mRvItems.adapter = mRssAdapter
@@ -63,5 +73,12 @@ public class RssListFragment : MVPFragment<RssListPresenter, RssListViewer>(), R
 
     override fun jumpToAddNewPodcastView() {
         startActivity<NewPodcastActivity>()
+    }
+
+    override fun jumpToPodcastView(id: Long) {
+        val intent = Intent(activity, PodcastDetailActivity::class.java)
+        intent.putExtra(Constants.KEY_PODCAST_TYPE, Constants.PODCAST_TYPE_ID)
+        intent.putExtra(Constants.KEY_PODCAST_ID, id)
+        startActivity(intent)
     }
 }

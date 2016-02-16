@@ -11,8 +11,8 @@ import butterknife.bindView
 import com.jakewharton.rxbinding.view.RxView
 import com.smilehacker.iocast.Constants
 import com.smilehacker.iocast.R
-import com.smilehacker.iocast.act.PodcastDetailActivity
 import com.smilehacker.iocast.base.mvp.MVPFragment
+import com.smilehacker.iocast.podcastDetail.PodcastDetailActivity
 import java.util.concurrent.TimeUnit
 
 /**
@@ -22,6 +22,8 @@ public class NewPodcastFragment : MVPFragment<NewPodcastPresenter, NewPodcastVie
 
     val mBtnAdd : Button by bindView(R.id.btn_add)
     val mEtUrl : EditText by bindView(R.id.et_url)
+
+
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater?.inflate(R.layout.frg_new_podcast, container, false);
@@ -36,7 +38,7 @@ public class NewPodcastFragment : MVPFragment<NewPodcastPresenter, NewPodcastVie
     fun init() {
         RxView.clicks(mBtnAdd)
             .throttleFirst(500, TimeUnit.MILLISECONDS)
-            .subscribe({presenter.addByUrl(mBtnAdd.text.toString())})
+            .subscribe({presenter.addByUrl(mEtUrl.text.toString())})
 
     }
 

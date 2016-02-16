@@ -3,7 +3,8 @@ package com.smilehacker.iocast.net
 import android.util.Log
 import com.squareup.okhttp.OkHttpClient
 import com.squareup.okhttp.Request
-import java.io.*
+import java.io.BufferedReader
+import java.io.InputStreamReader
 import java.util.concurrent.TimeUnit
 
 /**
@@ -25,9 +26,9 @@ class RssDownloader {
     fun downloadReader(url : String) : BufferedReader {
         val client = OkHttpClient()
         Log.i("aaa", url)
-        client.setConnectTimeout(30, TimeUnit.SECONDS)
-        client.setWriteTimeout(30, TimeUnit.SECONDS);
-        client.setReadTimeout(30, TimeUnit.SECONDS);
+        client.setConnectTimeout(60, TimeUnit.SECONDS)
+        client.setWriteTimeout(60, TimeUnit.SECONDS);
+        client.setReadTimeout(60, TimeUnit.SECONDS);
         val request = Request.Builder().url(url)
                 .get()
                 .build()

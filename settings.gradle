@@ -1,1 +1,1 @@
-include ':app', ":libraries:coffeeknife:coffeeknife"
+include ':app'

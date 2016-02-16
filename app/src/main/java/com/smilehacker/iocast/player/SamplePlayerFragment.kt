@@ -1,4 +1,4 @@
-package com.smilehacker.iocast.frg
+package com.smilehacker.iocast.player
 
 import android.os.Bundle
 import android.os.Handler
@@ -11,7 +11,6 @@ import android.widget.ImageView
 import android.widget.SeekBar
 import butterknife.bindView
 import com.smilehacker.iocast.R
-import com.smilehacker.iocast.player.PodcastPlayer
 import com.smilehacker.iocast.util.DLog
 import org.jetbrains.anko.onClick
 

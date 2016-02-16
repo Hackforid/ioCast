@@ -14,8 +14,14 @@ import net.danlew.android.joda.JodaTimeAndroid
 
 public class App : Application() {
 
+
+    companion object {
+        public lateinit  var inst : App
+    }
+
     override fun onCreate() {
         super.onCreate()
+        inst = this
         init()
     }
 

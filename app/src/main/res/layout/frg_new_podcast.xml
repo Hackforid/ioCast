@@ -10,7 +10,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="30dp"
-        android:hint="padcast url"
+        android:hint="podcast url"
         android:textColor="@android:color/black"
         android:textSize="15sp"
         android:inputType="textUri"

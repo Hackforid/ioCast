@@ -11,10 +11,12 @@ import com.smilehacker.iocast.model.PodcastRSS
 interface RssListViewer : Viewer {
     fun showItems(items : List<PodcastRSS>)
     fun jumpToAddNewPodcastView()
+    fun jumpToPodcastView(id : Long)
 }
 
 abstract class RssListPresenter : BasePresenter<RssListViewer>() {
 
     public abstract fun addPodcast()
     public abstract fun loadData()
+    public abstract fun onRssItemClick(rss : PodcastRSS)
 }
