@@ -16,7 +16,7 @@ import java.util.*
  * Created by kleist on 15/11/5.
  */
 @Table(name = PodcastRSS.DB.TABLENAME)
-public class PodcastRSS() : Model(), Parcelable {
+class PodcastRSS() : Model(), Parcelable {
 
     object DB {
         const val TABLENAME = "podcast"
@@ -87,10 +87,25 @@ public class PodcastRSS() : Model(), Parcelable {
         }
 
         // DB function
-        fun getWithItems(id : Long) : PodcastRSS? {
-            val podcast = Select().from(PodcastRSS::class.java)
+        fun get(id : Long) : PodcastRSS? {
+            val podcast : PodcastRSS = Select().from(PodcastRSS::class.java)
                     .where("Id=?", id)
-                    .executeSingle<PodcastRSS>()
+                    .executeSingle()
+            return podcast
+        }
+
+        fun getByItemIds(ids : MutableList<Long>) : MutableList<PodcastRSS> {
+            val strIds = ids.joinToString(",", "(", ")")
+            val podcasts = Select().from(PodcastRSS::class.java)
+                    .where("Id IN $strIds")
+                    .execute<PodcastRSS>()
+            return podcasts
+        }
+
+        fun getWithItems(id : Long) : PodcastRSS? {
+            val podcast : PodcastRSS = Select().from(PodcastRSS::class.java)
+                    .where("Id=?", id)
+                    .executeSingle()
             podcast?.items = PodcastItem.getByPodcastID(id)
             return podcast
         }
@@ -188,6 +203,12 @@ class PodcastItem() : Model(), Parcelable {
         fun getByPodcastID(id : Long) : ArrayList<PodcastItem> {
             return Select().from(PodcastItem::class.java)
                     .where("podcast_id=?", id).execute<PodcastItem>() as ArrayList<PodcastItem>
+        }
+
+        fun getByPodcastIDs(ids : MutableList<Long>) : MutableList<PodcastItem> {
+            val strIds = ids.joinToString(",", "(", ")")
+            return Select().from(PodcastItem::class.java)
+                    .where("podcast_id in $strIds").execute<PodcastItem>()
         }
     }
 

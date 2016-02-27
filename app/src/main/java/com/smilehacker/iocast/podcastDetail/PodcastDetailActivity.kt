@@ -11,6 +11,6 @@ class PodcastDetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.act_podcast_detail)
+        setContentView(R.layout.podcastdetail_act)
     }
 }

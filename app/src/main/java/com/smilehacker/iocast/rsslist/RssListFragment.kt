@@ -12,6 +12,7 @@ import butterknife.bindView
 import com.smilehacker.iocast.Constants
 import com.smilehacker.iocast.R
 import com.smilehacker.iocast.base.mvp.MVPFragment
+import com.smilehacker.iocast.download.DownloadActivity
 import com.smilehacker.iocast.model.PodcastRSS
 import com.smilehacker.iocast.newPodcast.NewPodcastActivity
 import com.smilehacker.iocast.podcastDetail.PodcastDetailActivity
@@ -28,6 +29,7 @@ public class RssListFragment : MVPFragment<RssListPresenter, RssListViewer>(), R
 
     val mRvItems by bindView<RecyclerView>(R.id.rv_items)
     val mBtnNew by bindView<Button>(R.id.btn_new)
+    val mBtnDownload by bindView<Button>(R.id.btn_download)
 
     val mRssAdapter by lazy { RssAdapter(context) }
 
@@ -59,6 +61,10 @@ public class RssListFragment : MVPFragment<RssListPresenter, RssListViewer>(), R
 
         mBtnNew.onClick {
             presenter.addPodcast()
+        }
+
+        mBtnDownload.onClick {
+            startActivity<DownloadActivity>()
         }
 
     }

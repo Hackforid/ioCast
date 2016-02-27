@@ -23,7 +23,8 @@
         <meta-data
             android:name="AA_MODELS"
             android:value="com.smilehacker.iocast.model.PodcastRSS,
-                           com.smilehacker.iocast.model.PodcastItem" />
+                           com.smilehacker.iocast.model.PodcastItem,
+                           com.smilehacker.iocast.model.DownloadInfo" />
 
         <activity
             android:name=".act.MainActivity"
@@ -35,6 +36,8 @@
         </activity>
         <activity
             android:name=".newPodcast.NewPodcastActivity"/>
+        <activity
+            android:name=".download.DownloadActivity"/>
         <activity
             android:name=".podcastDetail.PodcastDetailActivity"
             android:theme="@style/AppTheme.NoActionBar"

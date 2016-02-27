@@ -21,4 +21,5 @@ abstract class PodcastDetailPresenter : BasePresenter<PodcastDetailViewer>() {
     abstract fun initData(intent : Intent)
     abstract fun showPodcast()
     abstract fun subscribePodcast()
+    abstract fun downloadPodcast(itemUrl: String)
 }

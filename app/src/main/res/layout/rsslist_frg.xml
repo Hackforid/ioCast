@@ -9,6 +9,12 @@
         android:layout_height="wrap_content"
         android:text="New podcast"
         />
+    <Button
+        android:id="@+id/btn_download"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Download"
+        />
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_items"
         android:layout_width="match_parent"

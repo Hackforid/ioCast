@@ -11,6 +11,6 @@ class NewPodcastActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.act_new_podcast)
+        setContentView(R.layout.newpodcast_act)
     }
 }

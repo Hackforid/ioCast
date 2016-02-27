@@ -5,7 +5,7 @@
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:name="com.smilehacker.iocast.podcastDetail.PodcastDetailFragment"
-          tools:layout="@layout/frg_podcast_detail"
+          tools:layout="@layout/fpodcastdetail_frg"
     >
 
 </fragment>

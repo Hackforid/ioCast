@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-                android:padding="12dp"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="12dp"
     >
+
+    <ImageView
+        android:id="@+id/iv_download"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_download_black_48dp"
+        android:layout_marginLeft="10dp"
+        />
 
     <TextView
         android:id="@+id/tv_title"
@@ -13,6 +24,7 @@
         android:layout_height="wrap_content"
         android:textSize="16sp"
         tools:text="#173: 妳害怕彻底公开透明的社会吗？"
+        android:layout_toLeftOf="@id/iv_download"
         />
 
     <TextView
@@ -30,9 +42,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_title"
-        android:layout_toRightOf="@id/tv_pub_date"
-        android:layout_marginTop="5dp"
         android:layout_marginLeft="12dp"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@id/tv_pub_date"
         android:textSize="13sp"
         tools:text="2小时"
         />

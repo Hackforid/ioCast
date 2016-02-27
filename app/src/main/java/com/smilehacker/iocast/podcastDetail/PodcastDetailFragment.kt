@@ -18,7 +18,7 @@ import com.smilehacker.iocast.util.DLog
 /**
  * Created by kleist on 15/11/6.
  */
-class PodcastDetailFragment : MVPFragment<PodcastDetailPresenter, PodcastDetailViewer>(), PodcastDetailViewer {
+class PodcastDetailFragment : MVPFragment<PodcastDetailPresenter, PodcastDetailViewer>(), PodcastDetailViewer, PodcastItemAdapter.PodcastItemCallback {
 
 
     override fun createPresenter(): PodcastDetailPresenter {
@@ -41,14 +41,24 @@ class PodcastDetailFragment : MVPFragment<PodcastDetailPresenter, PodcastDetailV
 
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.frg_podcast_detail, container, false)
+        return inflater?.inflate(R.layout.fpodcastdetail_frg, container, false)
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         presenter.initData(activity.intent)
         initActionBar()
+        initList()
         presenter.showPodcast()
+    }
+
+    private fun initList() {
+        mItemAdapter.setCallback(this)
+    }
+
+    // list callback
+    override fun onDownloadClick(itemUrl: String) {
+        presenter.downloadPodcast(itemUrl)
     }
 
     private fun initActionBar() {
