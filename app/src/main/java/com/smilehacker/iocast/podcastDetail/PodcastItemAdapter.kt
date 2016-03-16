@@ -30,8 +30,8 @@ class PodcastItemAdapter(val ctx : Context) : RecyclerView.Adapter<PodcastItemAd
                 }
 
     private val mDownloadClickListener = View.OnClickListener { view ->
-        val itemUrl = view.getTag(R.string.tag_key_podcast_item_url) as String
-        mCallback?.onDownloadClick(itemUrl)
+        val item = view.getTag(R.string.tag_key_podcast_item) as PodcastItem
+        mCallback?.onDownloadClick(item)
     }
 
     fun setCallback(callback : PodcastItemCallback) {
@@ -52,7 +52,7 @@ class PodcastItemAdapter(val ctx : Context) : RecyclerView.Adapter<PodcastItemAd
         holder?.duration?.text = item.duration.toString()
         holder?.pubDate?.text = item.pubData.toString()
 
-        holder?.downloadIcon?.setTag(R.string.tag_key_podcast_item_url, item.fileUrl)
+        holder?.downloadIcon?.setTag(R.string.tag_key_podcast_item, item)
         holder?.downloadIcon?.setOnClickListener(mDownloadClickListener)
     }
 
@@ -70,6 +70,6 @@ class PodcastItemAdapter(val ctx : Context) : RecyclerView.Adapter<PodcastItemAd
     }
 
     interface PodcastItemCallback {
-        fun onDownloadClick(itemUrl: String);
+        fun onDownloadClick(item: PodcastItem);
     }
 }

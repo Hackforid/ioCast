@@ -3,6 +3,7 @@ package com.smilehacker.iocast.podcastDetail
 import android.content.Intent
 import com.smilehacker.iocast.base.mvp.BasePresenter
 import com.smilehacker.iocast.base.mvp.Viewer
+import com.smilehacker.iocast.model.PodcastItem
 import com.smilehacker.iocast.model.PodcastRSS
 
 /**
@@ -17,9 +18,10 @@ interface PodcastDetailViewer : Viewer {
 
 
 abstract class PodcastDetailPresenter : BasePresenter<PodcastDetailViewer>() {
-    public var podcast : PodcastRSS? = null
+    lateinit var podcast : PodcastRSS
     abstract fun initData(intent : Intent)
     abstract fun showPodcast()
     abstract fun subscribePodcast()
     abstract fun downloadPodcast(itemUrl: String)
+    abstract fun downloadPodcast(item : PodcastItem)
 }

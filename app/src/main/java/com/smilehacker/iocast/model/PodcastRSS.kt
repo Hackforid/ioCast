@@ -28,11 +28,12 @@ class PodcastRSS() : Model(), Parcelable {
         const val AUTHOR = "author"
         const val CATEGORY = "category"
         const val SUBSCRIBE = "subscribe"
+        const val FEED_URL = "feed_url"
     }
 
     @Column(name = DB.TITLE)
     var title : String = ""
-    @Column(name = DB.LINK, index = true)
+    @Column(name = DB.LINK)
     var link : String = ""
     @Column(name = DB.DESC)
     var description : String = ""
@@ -46,6 +47,8 @@ class PodcastRSS() : Model(), Parcelable {
     var category : String = ""
     @Column(name = DB.SUBSCRIBE)
     var subscribed: Boolean = false
+    @Column(name = DB.FEED_URL, index = true, unique = true)
+    var feedUrl : String = ""
 
     var items : ArrayList<PodcastItem>? = null
 
@@ -57,6 +60,7 @@ class PodcastRSS() : Model(), Parcelable {
         dest.writeString(this.image)
         dest.writeString(this.author)
         dest.writeString(this.category)
+        dest.writeString(this.feedUrl)
         dest.writeTypedList<PodcastItem>(this.items)
 
     }
@@ -73,6 +77,7 @@ class PodcastRSS() : Model(), Parcelable {
         this.image = parcel.readString()
         this.author = parcel.readString()
         this.category = parcel.readString()
+        this.feedUrl = parcel.readString()
         this.items = parcel.createTypedArrayList(PodcastItem.CREATOR)
     }
 
@@ -92,6 +97,12 @@ class PodcastRSS() : Model(), Parcelable {
                     .where("Id=?", id)
                     .executeSingle()
             return podcast
+        }
+
+        fun getByFeedUrl(url : String) : PodcastRSS? {
+            return Select().from(PodcastRSS::class.java)
+                    .where("${DB.FEED_URL} = ?", url)
+                    .executeSingle()
         }
 
         fun getByItemIds(ids : MutableList<Long>) : MutableList<PodcastRSS> {
@@ -125,21 +136,52 @@ class PodcastRSS() : Model(), Parcelable {
 
     fun subscribe(subscribed : Boolean = true) {
         this.subscribed = true
-        this.save()
+        this.saveWithItems()
+    }
+
+    fun update(podcast : PodcastRSS, withItem : Boolean = true, withSubscribed : Boolean = false) {
+        this.title = podcast.title
+        this.link = podcast.link
+        this.description = podcast.description
+        this.language = podcast.language
+        this.image = podcast.image
+        this.author = podcast.author
+        this.category = podcast.category
+        if (withSubscribed) {
+            this.subscribed = podcast.subscribed
+        }
+        this.items = podcast.items
+        if (withItem) {
+            this.saveWithItems()
+        } else {
+            this.save()
+        }
     }
 
     fun saveWithItems() : PodcastRSS {
         ActiveAndroid.beginTransaction()
         this.save()
-        if (items != null) {
-            for(item in items!!.iterator()) {
-                item.podcastID = id
-                item.save()
-            }
-        }
+        items?.let{ updateItems(it) }
         ActiveAndroid.setTransactionSuccessful()
         ActiveAndroid.endTransaction()
         return this
+    }
+
+    private fun updateItems(items : MutableList<PodcastItem>) {
+        val itemsInDB = PodcastItem.getByPodcastID(this.id)
+        for (i in 0..items.size - 1) {
+            val item = items[i]
+            val _item = itemsInDB.find { it.title.equals(item.title) }
+            if (_item == null) {
+                item.podcastID = id
+                item.save()
+            } else {
+                _item.update(item)
+                items[i] = _item
+            }
+        }
+
+
     }
 }
 
@@ -148,7 +190,7 @@ class PodcastItem() : Model(), Parcelable {
 
     @Column(name = "podcast_id", index = true)
     var podcastID : Long = 0
-    @Column(name = "title")
+    @Column(name = "title", index = true, unique = true)
     var title : String = ""
     @Column(name = "description")
     var description : String = ""
@@ -195,6 +237,21 @@ class PodcastItem() : Model(), Parcelable {
         this.duration = parcel.readInt()
         this.fileType = parcel.readString()
         this.fileUrl = parcel.readString()
+    }
+
+    fun saveOrUpdate() {
+        throw UnknownError()
+    }
+
+    fun update(item : PodcastItem) {
+        this.description = item.description
+        this.link = item.link
+        this.author = item.author
+        this.pubData = item.pubData
+        this.duration = item.duration
+        this.fileType = item.fileType
+        this.fileUrl = item.fileUrl
+        this.save()
     }
 
     companion object {

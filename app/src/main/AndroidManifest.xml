@@ -27,7 +27,7 @@
                            com.smilehacker.iocast.model.DownloadInfo" />
 
         <activity
-            android:name=".act.MainActivity"
+            android:name=".base.activity.HostActivity"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

@@ -8,7 +8,7 @@ import com.smilehacker.iocast.base.mvp.Viewer
  */
 
 interface NewPodcastViewer : Viewer {
-    fun jumpToPodcastView(id : Long)
+    fun jumpToPodcastView()
 }
 
 abstract class NewPodcastPresenter : BasePresenter<NewPodcastViewer>() {

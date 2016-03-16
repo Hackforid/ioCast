@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit
 /**
  * Created by kleist on 15/11/4.
  */
-public class NewPodcastFragment : MVPFragment<NewPodcastPresenter, NewPodcastViewer>(), NewPodcastViewer{
+class NewPodcastFragment : MVPFragment<NewPodcastPresenter, NewPodcastViewer>(), NewPodcastViewer{
 
     val mBtnAdd : Button by bindView(R.id.btn_add)
     val mEtUrl : EditText by bindView(R.id.et_url)
@@ -27,6 +27,17 @@ public class NewPodcastFragment : MVPFragment<NewPodcastPresenter, NewPodcastVie
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater?.inflate(R.layout.newpodcast_frg, container, false);
+
+//        view?.setOnKeyListener(object : View.OnKeyListener {
+//            override fun onKey(p0: View?, p1: Int, p2: KeyEvent?): Boolean {
+//                if (p1 == KeyEvent.KEYCODE_BACK) {
+//                    finish()
+//                }
+//                //return false
+//                return true
+//            }
+//        })
+
         return view
     }
 
@@ -46,10 +57,12 @@ public class NewPodcastFragment : MVPFragment<NewPodcastPresenter, NewPodcastVie
         return NewPodcastPresenterImp()
     }
 
-    override fun jumpToPodcastView(id: Long) {
+    override fun jumpToPodcastView() {
         val intent = Intent(activity, PodcastDetailActivity::class.java)
-        intent.putExtra(Constants.KEY_PODCAST_TYPE, Constants.PODCAST_TYPE_ID)
-        intent.putExtra(Constants.KEY_PODCAST_ID, id)
+        intent.putExtra(Constants.KEY_PODCAST_TYPE, Constants.PODCAST_TYPE.MEM)
         startActivity(intent)
     }
+
+
+
 }

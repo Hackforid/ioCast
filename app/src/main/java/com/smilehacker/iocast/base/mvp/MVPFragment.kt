@@ -2,14 +2,14 @@ package com.smilehacker.iocast.base.mvp
 
 import android.os.Bundle
 import android.view.View
-import com.smilehacker.iocast.base.BaseFragment
+import com.smilehacker.iocast.base.fragment.HostFragment
 
 /**
  * Created by kleist on 15/12/2.
  */
-abstract class MVPFragment<P : Presenter<V>, V : Viewer> : BaseFragment() {
+abstract class MVPFragment<P : Presenter<V>, V : Viewer> : HostFragment() {
     private val mPresenter : P by lazy { createPresenter() }
-    public val presenter = mPresenter
+    val presenter = mPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,6 +18,7 @@ abstract class MVPFragment<P : Presenter<V>, V : Viewer> : BaseFragment() {
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mPresenter.attachView(this as V)

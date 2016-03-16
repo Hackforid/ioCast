@@ -5,18 +5,13 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.BufferedReader
 import java.io.InputStreamReader
-import java.util.concurrent.TimeUnit
 
 /**
  * Created by kleist on 15/11/5.
  */
 class RssDownloader {
     fun download(url : String) : String? {
-        val client = OkHttpClient().newBuilder()
-            .writeTimeout(30, TimeUnit.SECONDS)
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .build()
+        val client = NetEngine.getRssDownloadHttpClient()
         val request = Request.Builder().url(url)
                 .get()
                 .build()

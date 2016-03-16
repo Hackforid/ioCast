@@ -12,6 +12,7 @@ import butterknife.bindView
 import com.facebook.drawee.view.SimpleDraweeView
 import com.smilehacker.iocast.R
 import com.smilehacker.iocast.base.mvp.MVPFragment
+import com.smilehacker.iocast.model.PodcastItem
 import com.smilehacker.iocast.model.PodcastRSS
 import com.smilehacker.iocast.util.DLog
 
@@ -36,6 +37,8 @@ class PodcastDetailFragment : MVPFragment<PodcastDetailPresenter, PodcastDetailV
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        presenter.initData(activity.intent)
+        DLog.d("init data")
         setHasOptionsMenu(true);
     }
 
@@ -46,7 +49,6 @@ class PodcastDetailFragment : MVPFragment<PodcastDetailPresenter, PodcastDetailV
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        presenter.initData(activity.intent)
         initActionBar()
         initList()
         presenter.showPodcast()
@@ -57,8 +59,8 @@ class PodcastDetailFragment : MVPFragment<PodcastDetailPresenter, PodcastDetailV
     }
 
     // list callback
-    override fun onDownloadClick(itemUrl: String) {
-        presenter.downloadPodcast(itemUrl)
+    override fun onDownloadClick(item: PodcastItem) {
+        presenter.downloadPodcast(item)
     }
 
     private fun initActionBar() {
@@ -68,7 +70,7 @@ class PodcastDetailFragment : MVPFragment<PodcastDetailPresenter, PodcastDetailV
 
     override fun showPodcast(podcast: PodcastRSS?) {
         if (podcast != null) {
-            mIvImg.setImageURI(Uri.parse(podcast.image))
+            mIvImg.setImageURI(Uri.parse(podcast.image), context)
             mTvTitle.text = podcast.title
             mTvAuthor.text = podcast.author
 
@@ -101,6 +103,7 @@ class PodcastDetailFragment : MVPFragment<PodcastDetailPresenter, PodcastDetailV
         super.onPrepareOptionsMenu(menu)
         DLog.d("")
         presenter.podcast?.apply {
+            DLog.d("subscribed = $subscribed")
             if (subscribed) {
                 menu?.findItem(R.id.action_subscribe)?.isVisible = false
             } else {

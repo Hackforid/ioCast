@@ -4,17 +4,19 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import butterknife.bindView
 import com.smilehacker.iocast.Constants
 import com.smilehacker.iocast.R
 import com.smilehacker.iocast.base.mvp.MVPFragment
 import com.smilehacker.iocast.download.DownloadActivity
 import com.smilehacker.iocast.model.PodcastRSS
-import com.smilehacker.iocast.newPodcast.NewPodcastActivity
+import com.smilehacker.iocast.newPodcast.NewPodcastFragment
 import com.smilehacker.iocast.podcastDetail.PodcastDetailActivity
 import com.smilehacker.iocast.util.DLog
 import org.jetbrains.anko.onClick
@@ -24,8 +26,10 @@ import org.jetbrains.anko.support.v4.startActivity
 /**
  * Created by kleist on 15/11/4.
  */
-public class RssListFragment : MVPFragment<RssListPresenter, RssListViewer>(), RssListViewer {
+class RssListFragment : MVPFragment<RssListPresenter, RssListViewer>(), RssListViewer {
 
+    companion object {
+    }
 
     val mRvItems by bindView<RecyclerView>(R.id.rv_items)
     val mBtnNew by bindView<Button>(R.id.btn_new)
@@ -33,9 +37,12 @@ public class RssListFragment : MVPFragment<RssListPresenter, RssListViewer>(), R
 
     val mRssAdapter by lazy { RssAdapter(context) }
 
+
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         DLog.d("onCreateView")
         val view = inflater?.inflate(R.layout.rsslist_frg, container, false);
+        val tv = view?.findViewById(R.id.tv_test) as TextView
+        tv.text = Html.fromHtml("<font color='#333'>P2P跑路？别怕，买债基，收益稳！不跑路！</font><font color='#aaaaaa'> - 蛋卷</font>")
         return view;
     }
 
@@ -78,7 +85,7 @@ public class RssListFragment : MVPFragment<RssListPresenter, RssListViewer>(), R
     }
 
     override fun jumpToAddNewPodcastView() {
-        startActivity<NewPodcastActivity>()
+        getHostActivity()?.startFragment<NewPodcastFragment>()
     }
 
     override fun jumpToPodcastView(id: Long) {

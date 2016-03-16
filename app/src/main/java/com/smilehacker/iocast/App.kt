@@ -3,9 +3,10 @@ package com.smilehacker.iocast
 import android.app.Application
 import com.activeandroid.ActiveAndroid
 import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.imagepipeline.backends.okhttp.OkHttpImagePipelineConfigFactory
+import com.facebook.stetho.Stetho
+import com.smilehacker.iocast.net.NetEngine
 import com.smilehacker.iocast.net.ProxyManager
-import com.squareup.okhttp.OkHttpClient
+import com.smilehacker.iocast.net.myokhttp.OkHttp3ImagePipelineConfigFactory
 import net.danlew.android.joda.JodaTimeAndroid
 
 /**
@@ -16,7 +17,7 @@ public class App : Application() {
 
 
     companion object {
-        public lateinit  var inst : App
+        lateinit  var inst : App
     }
 
     override fun onCreate() {
@@ -26,6 +27,7 @@ public class App : Application() {
     }
 
     fun init() {
+        Stetho.initializeWithDefaults(this);
         JodaTimeAndroid.init(this)
         ActiveAndroid.initialize(this)
         initFresco()
@@ -33,7 +35,9 @@ public class App : Application() {
     }
 
     fun initFresco() {
-        val config = OkHttpImagePipelineConfigFactory.newBuilder(this, OkHttpClient()).build()
+        // TODO
+        // fresco will support okhttp3 later https://github.com/facebook/fresco/issues/891
+        val config = OkHttp3ImagePipelineConfigFactory.newBuilder(this, NetEngine.getFrescoHttpClient()).build()
         Fresco.initialize(this, config)
     }
 
