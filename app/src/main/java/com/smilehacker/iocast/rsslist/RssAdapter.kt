@@ -5,12 +5,10 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import butterknife.bindView
 import com.facebook.drawee.view.SimpleDraweeView
-import com.smilehacker.coffeeknife.android.DeviceInfo
-import com.smilehacker.iocast.App
 import com.smilehacker.iocast.R
 import com.smilehacker.iocast.model.PodcastRSS
 import com.smilehacker.iocast.util.setImageUrl
@@ -25,32 +23,22 @@ class RssAdapter(val ctx : Context) : RecyclerView.Adapter<RssAdapter.ViewHolder
     private val mRssList = ArrayList<PodcastRSS>()
     private val mLayoutInflater : LayoutInflater by lazy { LayoutInflater.from(ctx) }
 
-    private var mGridHeight : Int = 0
-
-    private val TAG_PODCAST = 1
-
     private  lateinit var mOnItemClickListener : View.OnClickListener
 
     private var mCallback : RssListCallback? = null
 
     init {
         mOnItemClickListener  = View.OnClickListener { v ->
-            val podcast = v?.tag as PodcastRSS
+            val podcast = v?.getTag(R.string.key_podcast) as PodcastRSS
             mCallback?.onItemClick(podcast)
         }
     }
 
-    public fun setCallback(callback : RssListCallback) {
+    fun setCallback(callback : RssListCallback) {
         mCallback = callback
     }
 
-
-    public fun setGridHorizontalCount(count : Int) {
-        mGridHeight = calculateGridHeight(count)
-        notifyDataSetChanged()
-    }
-
-    public fun setList(list : List<PodcastRSS>) {
+    fun setList(list : List<PodcastRSS>) {
         mRssList.clear()
         mRssList.addAll(list)
         notifyDataSetChanged()
@@ -59,14 +47,10 @@ class RssAdapter(val ctx : Context) : RecyclerView.Adapter<RssAdapter.ViewHolder
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
         val rss = mRssList[position]
 
-        val lp = holder?.container?.layoutParams
-        lp?.height = mGridHeight
-        holder?.container?.layoutParams = lp
-
         holder?.img?.setImageUrl(rss.image)
 
         holder?.podcast = rss
-        holder?.container?.setTag(rss)
+        holder?.container?.setTag(R.string.key_podcast, rss)
         holder?.container?.setOnClickListener(mOnItemClickListener)
     }
 
@@ -78,18 +62,13 @@ class RssAdapter(val ctx : Context) : RecyclerView.Adapter<RssAdapter.ViewHolder
         return mRssList.size
     }
 
-    private fun calculateGridHeight(num : Int) : Int {
-        val deviceInfo = DeviceInfo(App.inst)
-        return deviceInfo.screenWidth / num
-    }
-
     interface RssListCallback {
         fun onItemClick(rss : PodcastRSS)
     }
 
     class ViewHolder : RecyclerView.ViewHolder {
 
-        val container by bindView<LinearLayout>(R.id.container)
+        val container by bindView<RelativeLayout>(R.id.container)
         val img by bindView<SimpleDraweeView>(R.id.iv_img)
         val unread by bindView<TextView>(R.id.tv_unread)
 

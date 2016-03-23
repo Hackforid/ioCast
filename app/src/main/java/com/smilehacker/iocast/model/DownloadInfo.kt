@@ -4,6 +4,7 @@ import com.activeandroid.Model
 import com.activeandroid.annotation.Column
 import com.activeandroid.annotation.Table
 import com.activeandroid.query.Select
+import com.smilehacker.iocast.download.Downloader
 
 /**
  * Created by kleist on 16/2/17.
@@ -19,20 +20,11 @@ class DownloadInfo() : Model() {
         const val STATUS = "status"
     }
 
-    object DOWNLOAD_STATUS {
-        const val init = 0
-        const val downloading = 1
-        const val pause = 2
-        const val complete = 3
-        const val cancel = 4
-        const val delete = 5
-    }
-
     constructor(url : String) : this() {
         this.url = url
     }
 
-    @Column(name = DB.PODCAST_ITEM_ID)
+    @Column(name = DB.PODCAST_ITEM_ID, unique = true, index = true)
     var podcastItemID : Long = -1
 
     @Column(name = DB.URL)
@@ -45,13 +37,30 @@ class DownloadInfo() : Model() {
     var completeSize : Long = 0
 
     @Column(name = DB.STATUS)
-    var status = DOWNLOAD_STATUS.init
+    var status = Downloader.STATUS.STATUS_INIT
+
+    var memStatus = Downloader.STATUS.STATUS_INIT
+
+    var lastUpdateTime : Long = 0
 
     companion object {
-        fun get(url : String) : DownloadInfo {
+        fun get(url : String) : DownloadInfo? {
             return Select().from(DownloadInfo::class.java)
             .where("${DB.URL} = ?", url)
             .executeSingle()
+        }
+
+        fun get(podcastItemId: Long) : DownloadInfo? {
+            return Select().from(DownloadInfo::class.java)
+                    .where("${DB.PODCAST_ITEM_ID} = ?", podcastItemId)
+                    .executeSingle()
+        }
+
+        fun getByPodcastItemIds(podcastItemIds: MutableList<Long>) : MutableList<DownloadInfo> {
+            val ids = podcastItemIds.joinToString(",")
+            return Select().from(DownloadInfo::class.java)
+                            .where("${DB.PODCAST_ITEM_ID} in ($ids)")
+                            .execute()
         }
 
         fun getAll() : MutableList<DownloadInfo> {
@@ -62,6 +71,17 @@ class DownloadInfo() : Model() {
 
     fun updateTotalSize(totalSize : Long) {
         this.totalSize = totalSize
+        save()
+    }
+
+    fun updateCompleteSize(completeSize: Long) {
+        this.completeSize = completeSize
+        save()
+    }
+
+    fun finishDownload() {
+        this.completeSize = this.totalSize
+        this.status = Downloader.STATUS.STATUS_COMPLETE
         save()
     }
 }

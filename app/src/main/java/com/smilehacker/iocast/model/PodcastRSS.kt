@@ -7,6 +7,7 @@ import com.activeandroid.Model
 import com.activeandroid.annotation.Column
 import com.activeandroid.annotation.Table
 import com.activeandroid.query.Select
+import com.smilehacker.iocast.download.Downloader
 import com.smilehacker.iocast.util.RssParser
 import com.smilehacker.iocast.util.RssUtils
 import org.joda.time.DateTime
@@ -124,7 +125,7 @@ class PodcastRSS() : Model(), Parcelable {
         fun getAll(subscribed : Boolean? = null) : List<PodcastRSS> {
             if (subscribed != null) {
                 return Select().from(PodcastRSS::class.java)
-                        .where("${DB.SUBSCRIBE} = ?", subscribed)
+                        .where("${DB.SUBSCRIBE} = ?", 1)
                         .execute<PodcastRSS>()
             } else{
                 return Select().from(PodcastRSS::class.java)
@@ -207,6 +208,15 @@ class PodcastItem() : Model(), Parcelable {
     @Column(name = "file_url")
     var fileUrl : String = ""
 
+    var totalSize = 0L
+    var completeSize = 0L
+    var status = Downloader.STATUS.STATUS_INIT
+
+    fun setDownloadInfo(totalSize : Long, completeSize : Long, status : Int) {
+        this.totalSize = totalSize
+        this.completeSize = completeSize
+        this.status = status
+    }
 
     fun setPubDateByRssDate(date : String) {
         this.pubData = RssUtils.getPubDate(date)
@@ -256,6 +266,12 @@ class PodcastItem() : Model(), Parcelable {
 
     companion object {
         val CREATOR = createParcel { PodcastItem(it) }
+
+        fun get(id : Long) : PodcastItem? {
+            return Select().from(PodcastItem::class.java)
+                        .where("Id = $id")
+                        .executeSingle()
+        }
 
         fun getByPodcastID(id : Long) : ArrayList<PodcastItem> {
             return Select().from(PodcastItem::class.java)

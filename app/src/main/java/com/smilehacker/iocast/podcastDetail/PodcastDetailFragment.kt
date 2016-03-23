@@ -21,7 +21,6 @@ import com.smilehacker.iocast.util.DLog
  */
 class PodcastDetailFragment : MVPFragment<PodcastDetailPresenter, PodcastDetailViewer>(), PodcastDetailViewer, PodcastItemAdapter.PodcastItemCallback {
 
-
     override fun createPresenter(): PodcastDetailPresenter {
         return PodcastDetailPresenterImp()
     }
@@ -37,7 +36,7 @@ class PodcastDetailFragment : MVPFragment<PodcastDetailPresenter, PodcastDetailV
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        presenter.initData(activity.intent)
+        presenter.initData(arguments)
         DLog.d("init data")
         setHasOptionsMenu(true);
     }
@@ -56,11 +55,13 @@ class PodcastDetailFragment : MVPFragment<PodcastDetailPresenter, PodcastDetailV
 
     private fun initList() {
         mItemAdapter.setCallback(this)
+        mRvItems.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        mRvItems.adapter = mItemAdapter
     }
 
     // list callback
     override fun onDownloadClick(item: PodcastItem) {
-        presenter.downloadPodcast(item)
+        presenter.startDownload(item)
     }
 
     private fun initActionBar() {
@@ -74,8 +75,7 @@ class PodcastDetailFragment : MVPFragment<PodcastDetailPresenter, PodcastDetailV
             mTvTitle.text = podcast.title
             mTvAuthor.text = podcast.author
 
-            mRvItems.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            mRvItems.adapter = mItemAdapter
+            DLog.d("items size = ${podcast.items?.size}")
             mItemAdapter.items = podcast.items
         }
     }
@@ -96,12 +96,10 @@ class PodcastDetailFragment : MVPFragment<PodcastDetailPresenter, PodcastDetailV
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater?.inflate(R.menu.menu_podcast_detail, menu)
-        DLog.d("")
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?) {
         super.onPrepareOptionsMenu(menu)
-        DLog.d("")
         presenter.podcast?.apply {
             DLog.d("subscribed = $subscribed")
             if (subscribed) {
@@ -110,5 +108,20 @@ class PodcastDetailFragment : MVPFragment<PodcastDetailPresenter, PodcastDetailV
                 menu?.findItem(R.id.action_subscribe)?.isVisible = true
             }
         }
+    }
+
+    override fun startDownload(podcastItemId: Long) {
+    }
+
+    override fun updateDownloadStatus() {
+        mItemAdapter.notifyDataSetChanged()
+    }
+
+    override fun startDownload(item: PodcastItem) {
+        presenter.startDownload(item)
+    }
+
+    override fun pauseDownload(item: PodcastItem) {
+        presenter.pauseDownload(item)
     }
 }

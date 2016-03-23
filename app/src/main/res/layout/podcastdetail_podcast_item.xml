@@ -4,18 +4,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:padding="12dp"
     >
 
-    <ImageView
+    <Button
         android:id="@+id/iv_download"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:src="@drawable/ic_download_black_48dp"
         android:layout_marginLeft="10dp"
+        android:background="@drawable/circle_blue_100"
+        android:textColor="@color/text_level4_color"
+        android:text="down"
+        android:textSize="@dimen/common_textsize_t0"
         />
 
     <TextView

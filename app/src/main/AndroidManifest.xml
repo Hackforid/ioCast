@@ -27,21 +27,17 @@
                            com.smilehacker.iocast.model.DownloadInfo" />
 
         <activity
-            android:name=".base.activity.HostActivity"
+            android:name=".ui.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity
-            android:name=".newPodcast.NewPodcastActivity"/>
-        <activity
-            android:name=".download.DownloadActivity"/>
-        <activity
-            android:name=".podcastDetail.PodcastDetailActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            />
+
+        <service android:name=".download.DownloadService" />
+        <service android:name=".player.PlayService" />
     </application>
 
 

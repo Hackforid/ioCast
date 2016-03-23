@@ -5,10 +5,11 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import android.widget.Button
 import android.widget.TextView
 import butterknife.bindView
 import com.smilehacker.iocast.R
+import com.smilehacker.iocast.download.Downloader
 import com.smilehacker.iocast.model.PodcastItem
 import java.util.*
 
@@ -18,6 +19,7 @@ import java.util.*
 class PodcastItemAdapter(val ctx : Context) : RecyclerView.Adapter<PodcastItemAdapter.ViewHolder>() {
 
     private val mItems : ArrayList<PodcastItem> by lazy { ArrayList<PodcastItem>() }
+
     private val mLayoutInflater : LayoutInflater by lazy { LayoutInflater.from(ctx)}
     private var mCallback : PodcastItemCallback? = null
 
@@ -31,7 +33,11 @@ class PodcastItemAdapter(val ctx : Context) : RecyclerView.Adapter<PodcastItemAd
 
     private val mDownloadClickListener = View.OnClickListener { view ->
         val item = view.getTag(R.string.tag_key_podcast_item) as PodcastItem
-        mCallback?.onDownloadClick(item)
+        if (item.status == Downloader.STATUS.STATUS_DOWNLOADING) {
+            mCallback?.pauseDownload(item)
+        } else {
+            mCallback?.startDownload(item)
+        }
     }
 
     fun setCallback(callback : PodcastItemCallback) {
@@ -52,15 +58,35 @@ class PodcastItemAdapter(val ctx : Context) : RecyclerView.Adapter<PodcastItemAd
         holder?.duration?.text = item.duration.toString()
         holder?.pubDate?.text = item.pubData.toString()
 
-        holder?.downloadIcon?.setTag(R.string.tag_key_podcast_item, item)
-        holder?.downloadIcon?.setOnClickListener(mDownloadClickListener)
+        holder?.downloadBtn?.setTag(R.string.tag_key_podcast_item, item)
+
+        when (item.status) {
+            Downloader.STATUS.STATUS_FAIL -> {
+                holder?.downloadBtn?.text = "FAIL"
+            }
+            Downloader.STATUS.STATUS_COMPLETE -> holder?.downloadBtn?.text = "DONE"
+            Downloader.STATUS.STATUS_DOWNLOADING -> holder?.downloadBtn?.text = "${(100f * item.completeSize / item.totalSize).toInt()}%"
+            Downloader.STATUS.STATUS_PAUSE -> holder?.downloadBtn?.text = "PAUSE"
+            Downloader.STATUS.STATUS_INIT -> {
+                if (item.completeSize != 0L || item.totalSize > item.completeSize) {
+                    holder?.downloadBtn?.text = "PAUSE"
+                } else {
+                    holder?.downloadBtn?.text = "DOWN"
+                }
+            }
+            else -> {
+                holder?.downloadBtn?.text = "DOWN"
+            }
+        }
+
+        holder?.downloadBtn?.setOnClickListener(mDownloadClickListener)
     }
 
     class ViewHolder : RecyclerView.ViewHolder {
         val title by bindView<TextView>(R.id.tv_title)
         val duration by bindView<TextView>(R.id.tv_duration)
         val pubDate by bindView<TextView>(R.id.tv_pub_date)
-        val downloadIcon by bindView<ImageView>(R.id.iv_download)
+        val downloadBtn by bindView<Button>(R.id.iv_download)
 
         constructor(view : View) : super(view) {
 
@@ -71,5 +97,7 @@ class PodcastItemAdapter(val ctx : Context) : RecyclerView.Adapter<PodcastItemAd
 
     interface PodcastItemCallback {
         fun onDownloadClick(item: PodcastItem);
+        fun startDownload(item: PodcastItem)
+        fun pauseDownload(item: PodcastItem)
     }
 }

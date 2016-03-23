@@ -24,4 +24,12 @@ abstract class BasePresenter<V : Viewer> : Presenter<V> {
     public fun isViewAttached() : Boolean {
         return mViewRef?.get() != null
     }
+
+    open fun onShow() {
+
+    }
+
+    open fun onHidden() {
+
+    }
 }

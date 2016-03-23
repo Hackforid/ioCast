@@ -151,6 +151,11 @@ abstract class KitFragment : Fragment() {
         mFragmentation = mActivity.fragmentation
     }
 
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        onShow()
+    }
+
     open fun onBackPressed(): Boolean {
         val top = getTopChildFragment()
         if (top != null) {

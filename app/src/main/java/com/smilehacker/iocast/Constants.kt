@@ -13,6 +13,10 @@ object Constants {
     const val PODCAST_TYPE_URL = "key_podcast_type_url"
     const val PODCAST_TYPE_ID = "key_podcast_type_id"
 
+    const val KEY_DOWNLOAD_URL = "key_download_url"
+    const val KEY_PODCAST_ITEM_ID = "key_podcast_item_id"
+    const val KEY_DOWNLOAD_SERVICE_COMMAND = "key_download_service_command"
+
     object PODCAST_TYPE {
         const val ID = 0
         const val MEM = 1

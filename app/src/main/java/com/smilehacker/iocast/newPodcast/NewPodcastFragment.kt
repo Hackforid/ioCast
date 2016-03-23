@@ -1,6 +1,5 @@
 package com.smilehacker.iocast.newPodcast
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +11,8 @@ import com.jakewharton.rxbinding.view.RxView
 import com.smilehacker.iocast.Constants
 import com.smilehacker.iocast.R
 import com.smilehacker.iocast.base.mvp.MVPFragment
-import com.smilehacker.iocast.podcastDetail.PodcastDetailActivity
+import com.smilehacker.iocast.podcastDetail.PodcastDetailFragment
+import org.jetbrains.anko.support.v4.withArguments
 import java.util.concurrent.TimeUnit
 
 /**
@@ -27,17 +27,6 @@ class NewPodcastFragment : MVPFragment<NewPodcastPresenter, NewPodcastViewer>(),
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater?.inflate(R.layout.newpodcast_frg, container, false);
-
-//        view?.setOnKeyListener(object : View.OnKeyListener {
-//            override fun onKey(p0: View?, p1: Int, p2: KeyEvent?): Boolean {
-//                if (p1 == KeyEvent.KEYCODE_BACK) {
-//                    finish()
-//                }
-//                //return false
-//                return true
-//            }
-//        })
-
         return view
     }
 
@@ -58,9 +47,7 @@ class NewPodcastFragment : MVPFragment<NewPodcastPresenter, NewPodcastViewer>(),
     }
 
     override fun jumpToPodcastView() {
-        val intent = Intent(activity, PodcastDetailActivity::class.java)
-        intent.putExtra(Constants.KEY_PODCAST_TYPE, Constants.PODCAST_TYPE.MEM)
-        startActivity(intent)
+        startFragment(PodcastDetailFragment().withArguments(Constants.KEY_PODCAST_TYPE to Constants.PODCAST_TYPE.MEM))
     }
 
 

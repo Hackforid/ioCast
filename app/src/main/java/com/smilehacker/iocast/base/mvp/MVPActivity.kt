@@ -1,13 +1,13 @@
 package com.smilehacker.iocast.base.mvp
 
 import android.os.Bundle
-import com.smilehacker.iocast.base.BaseActivity
+import android.support.v7.app.AppCompatActivity
 
 /**
  * Created by kleist on 15/12/2.
  */
 
-abstract class MVPActivity<P : Presenter<V>, V : Viewer>: BaseActivity() {
+abstract class MVPActivity<P : Presenter<V>, V : Viewer>: AppCompatActivity() {
 
     private val mPresenter : P by lazy { createPresenter() }
     public val presenter = mPresenter

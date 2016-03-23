@@ -29,4 +29,12 @@
     <!--background-->
     <color name="background_gray">#eeeeee</color>
     <color name="background_white">#ffffff</color>
+
+    <color name="mgt_120">#cc3344</color>
+    <color name="mgt_100">#ff4055</color>
+    <color name="mgt_80">#ff6677</color>
+    <color name="mgt_40">#ffb2bb</color>
+
+    <color name="blu_100">#2384e8</color>
+    <color name="blu_80">#4f9de3</color>
 </resources>
