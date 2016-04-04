@@ -1,12 +1,11 @@
 package com.smilehacker.iocast.rsslist
 
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
+import android.support.v7.widget.Toolbar
+import android.view.*
 import butterknife.bindView
 import com.smilehacker.iocast.Constants
 import com.smilehacker.iocast.R
@@ -16,7 +15,6 @@ import com.smilehacker.iocast.model.PodcastRSS
 import com.smilehacker.iocast.newPodcast.NewPodcastFragment
 import com.smilehacker.iocast.podcastDetail.PodcastDetailFragment
 import com.smilehacker.iocast.util.DLog
-import org.jetbrains.anko.onClick
 import org.jetbrains.anko.support.v4.withArguments
 
 
@@ -28,12 +26,16 @@ class RssListFragment : MVPFragment<RssListPresenter, RssListViewer>(), RssListV
     companion object {
     }
 
+    val mToolbar by bindView<Toolbar>(R.id.toolbar)
     val mRvItems by bindView<RecyclerView>(R.id.rv_items)
-    val mBtnNew by bindView<Button>(R.id.btn_new)
-    val mBtnDownload by bindView<Button>(R.id.btn_download)
 
     val mRssAdapter by lazy { RssAdapter(context) }
 
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         DLog.d("onCreateView")
@@ -52,7 +54,7 @@ class RssListFragment : MVPFragment<RssListPresenter, RssListViewer>(), RssListV
         super.onShow()
     }
 
-    fun init() {
+    private fun init() {
         mRssAdapter.setCallback(object : RssAdapter.RssListCallback {
             override fun onItemClick(rss: PodcastRSS) {
                 jumpToPodcastView(rss.id)
@@ -62,13 +64,11 @@ class RssListFragment : MVPFragment<RssListPresenter, RssListViewer>(), RssListV
         mRvItems.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         mRvItems.adapter = mRssAdapter
 
-        mBtnNew.onClick {
-            presenter.addPodcast()
-        }
+        initToolbar()
+    }
 
-        mBtnDownload.onClick {
-        }
-
+    private fun initToolbar() {
+        (activity as AppCompatActivity).setSupportActionBar(mToolbar)
     }
 
     override fun showItems(items: List<PodcastRSS>) {
@@ -87,5 +87,22 @@ class RssListFragment : MVPFragment<RssListPresenter, RssListViewer>(), RssListV
         startFragment(PodcastDetailFragment()
                 .withArguments(Constants.KEY_PODCAST_TYPE to Constants.PODCAST_TYPE.ID,
                                Constants.KEY_PODCAST_ID to id))
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater?.inflate(R.menu.menu_podcast_list, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when(item?.itemId) {
+            R.id.menu_add -> {
+                presenter.addPodcast()
+                return true
+            }
+            R.id.menu_download -> {
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

@@ -11,6 +11,9 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+
+        // disable vector to jpg
+        vectorDrawables.useSupportLibrary = true
     }
 
     buildTypes {
@@ -57,8 +60,9 @@ dependencies {
     compile "com.android.support:percent:$android_support_version"
 
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile 'org.jetbrains.anko:anko-sdk23:0.8.2' // sdk19, sdk21, sdk23 are also available
-    compile 'org.jetbrains.anko:anko-support-v4:0.8.2'
+    compile 'org.jetbrains.anko:anko-sdk23:0.8.3' // sdk19, sdk21, sdk23 are also available
+    compile 'org.jetbrains.anko:anko-support-v4:0.8.3'
+    compile 'org.jetbrains.anko:anko-appcompat-v7:0.8.3'
 
     compile 'com.jakewharton:kotterknife:0.1.0-SNAPSHOT'
 
@@ -72,7 +76,7 @@ dependencies {
     compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
     compile 'net.danlew:android.joda:2.9.0'
     compile 'com.google.android.exoplayer:exoplayer:r1.5.2'
-    compile 'com.danikula:videocache:2.3.3'
+    compile 'com.danikula:videocache:2.3.4'
 
     compile 'io.reactivex:rxjava:1.0.17'
     compile 'io.reactivex:rxkotlin:0.40.1'

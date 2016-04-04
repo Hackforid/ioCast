@@ -14,17 +14,17 @@ import com.google.android.exoplayer.extractor.ExtractorSampleSource
 import com.google.android.exoplayer.upstream.DefaultAllocator
 import com.google.android.exoplayer.upstream.DefaultBandwidthMeter
 import com.google.android.exoplayer.upstream.DefaultUriDataSource
-import com.smilehacker.iocast.net.ProxyManager
 import com.smilehacker.iocast.util.DLog
 
 /**
  * Created by kleist on 15/11/11.
  */
 
-class PodcastPlayer(val ctx : Context) {
-
+class Player(val ctx : Context) : ExoPlayer.Listener {
 
     lateinit var mPlayer : ExoPlayer
+
+    private var mPlayListener : ExoPlayer.Listener? = null
 
     init {
         init()
@@ -33,14 +33,15 @@ class PodcastPlayer(val ctx : Context) {
 
     fun init() {
         mPlayer = ExoPlayer.Factory.newInstance(1)
+    }
+
+    fun prepare(url : String) {
         val allocator = DefaultAllocator(65536)
         val bandwidthMeter = DefaultBandwidthMeter(Handler(), null)
         val dataSource = DefaultUriDataSource(ctx, bandwidthMeter, "android")
-        DLog.d("cache dir = " + ctx.cacheDir.path)
-        val url = "http://ipn.li/itgonglun/178/audio.mp3"
-        //val url = "http://192.168.205.43:8000/%E5%BF%83%E5%81%9A%E3%81%9714.mp3"
-        val uri = ProxyManager.httpProxyServer.getProxyUrl(url)
-        val sampleSource = ExtractorSampleSource(Uri.parse(uri),
+        // TODO add buffer proxy
+        //val uri = ProxyManager.httpProxyServer.getProxyUrl(url)
+        val sampleSource = ExtractorSampleSource(Uri.parse(url),
                 dataSource, allocator,
                 65536 * 256)
         val audioRender = MediaCodecAudioTrackRenderer(sampleSource, null, true,
@@ -70,44 +71,52 @@ class PodcastPlayer(val ctx : Context) {
                 }, AudioCapabilities.getCapabilities(ctx))
 
         mPlayer.prepare(audioRender)
-        mPlayer.addListener(object : ExoPlayer.Listener {
-            override fun onPlayerError(error: ExoPlaybackException?) {
-            }
-
-            override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-            }
-
-            override fun onPlayWhenReadyCommitted() {
-            }
-        })
+        mPlayer.addListener(this)
     }
 
-    public fun start() {
+    fun start(pos : Long = 0L) {
+        seekTo(pos)
         mPlayer.playWhenReady = true
     }
 
-    public fun pause() {
+    fun pause() {
         mPlayer.playWhenReady = false
     }
 
-    public fun seekTo(positionMs : Long) {
+    fun seekTo(positionMs : Long) {
         mPlayer.seekTo(positionMs)
     }
 
-    public fun getDuration(): Long {
+    fun getDuration(): Long {
         return if (mPlayer.duration != ExoPlayer.UNKNOWN_TIME) mPlayer.duration else 0
     }
 
-    public fun getCurrentPostion() : Long {
+    fun getCurrentPosition() : Long {
         return if (mPlayer.currentPosition != ExoPlayer.UNKNOWN_TIME) mPlayer.currentPosition else 0
     }
 
 
-    public fun getBufferedPosition() : Long {
+    fun getBufferedPosition() : Long {
         return if (mPlayer.bufferedPosition != ExoPlayer.UNKNOWN_TIME) mPlayer.bufferedPosition else 0
     }
 
-    public fun isPlaying() : Boolean {
+    fun isPlaying() : Boolean {
         return mPlayer.playWhenReady
+    }
+
+    override fun onPlayerError(error: ExoPlaybackException?) {
+        mPlayListener?.onPlayerError(error)
+    }
+
+    override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+        mPlayListener?.onPlayerStateChanged(playWhenReady, playbackState)
+    }
+
+    override fun onPlayWhenReadyCommitted() {
+        mPlayListener?.onPlayWhenReadyCommitted()
+    }
+
+    fun setPlayListener(listener : ExoPlayer.Listener) {
+        mPlayListener = listener
     }
 }

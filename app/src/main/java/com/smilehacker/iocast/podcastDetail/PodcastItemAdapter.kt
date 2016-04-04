@@ -40,6 +40,12 @@ class PodcastItemAdapter(val ctx : Context) : RecyclerView.Adapter<PodcastItemAd
         }
     }
 
+    private val mPlayListener = View.OnClickListener {
+        view ->
+            val item = view.getTag(R.string.tag_key_podcast_item) as PodcastItem
+            mCallback?.onPlayClick(item)
+    }
+
     fun setCallback(callback : PodcastItemCallback) {
         mCallback = callback
     }
@@ -59,6 +65,7 @@ class PodcastItemAdapter(val ctx : Context) : RecyclerView.Adapter<PodcastItemAd
         holder?.pubDate?.text = item.pubData.toString()
 
         holder?.downloadBtn?.setTag(R.string.tag_key_podcast_item, item)
+        holder?.itemView?.setTag(R.string.tag_key_podcast_item, item)
 
         when (item.status) {
             Downloader.STATUS.STATUS_FAIL -> {
@@ -80,6 +87,7 @@ class PodcastItemAdapter(val ctx : Context) : RecyclerView.Adapter<PodcastItemAd
         }
 
         holder?.downloadBtn?.setOnClickListener(mDownloadClickListener)
+        holder?.itemView?.setOnClickListener(mPlayListener)
     }
 
     class ViewHolder : RecyclerView.ViewHolder {
@@ -99,5 +107,6 @@ class PodcastItemAdapter(val ctx : Context) : RecyclerView.Adapter<PodcastItemAd
         fun onDownloadClick(item: PodcastItem);
         fun startDownload(item: PodcastItem)
         fun pauseDownload(item: PodcastItem)
+        fun onPlayClick(item : PodcastItem)
     }
 }

@@ -26,4 +26,5 @@ abstract class PodcastDetailPresenter : BasePresenter<PodcastDetailViewer>() {
     abstract fun subscribePodcast()
     abstract fun startDownload(item : PodcastItem)
     abstract fun pauseDownload(item: PodcastItem)
+    abstract fun startPlay(item : PodcastItem)
 }

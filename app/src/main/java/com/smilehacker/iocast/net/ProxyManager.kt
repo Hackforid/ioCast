@@ -10,9 +10,9 @@ object ProxyManager {
 
     private lateinit var mContext : Context
 
-    public val httpProxyServer by lazy { HttpProxyCacheServer(mContext) }
+    val httpProxyServer by lazy { HttpProxyCacheServer(mContext) }
 
-    public fun init(context : Context) {
+    fun init(context : Context) {
         mContext = context.applicationContext
     }
 }

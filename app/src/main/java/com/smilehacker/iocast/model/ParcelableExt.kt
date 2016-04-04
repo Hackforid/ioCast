@@ -76,3 +76,4 @@ fun Parcel.readNullableBoolean(): Boolean? =
             1.toByte() -> true
             else -> null
         }
+

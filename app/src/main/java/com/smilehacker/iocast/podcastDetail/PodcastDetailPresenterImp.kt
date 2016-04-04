@@ -8,6 +8,7 @@ import com.smilehacker.iocast.download.DownloadManager
 import com.smilehacker.iocast.model.DownloadInfo
 import com.smilehacker.iocast.model.PodcastItem
 import com.smilehacker.iocast.model.PodcastRSS
+import com.smilehacker.iocast.player.PlayManager
 import com.smilehacker.iocast.util.DLog
 import com.smilehacker.iocast.util.RxBus
 import rx.Subscription
@@ -118,5 +119,10 @@ class PodcastDetailPresenterImp : PodcastDetailPresenter() {
             podcast.items?.find { it.id == downloadInfo.podcastItemID  }?.setDownloadInfo(downloadInfo.totalSize, downloadInfo.completeSize, downloadInfo.status)
         }
 
+    }
+
+    override fun startPlay(item: PodcastItem) {
+        PlayManager.prepare(item)
+        PlayManager.start()
     }
 }

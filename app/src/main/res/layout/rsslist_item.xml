@@ -5,25 +5,57 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="12dp"
+    android:layout_height="60dp"
     >
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/iv_img"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:placeholderImage="@color/background_gray"
+        />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="IT公论"
+        android:layout_toRightOf="@id/iv_img"
+        android:textSize="@dimen/common_textsize_t5"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/text_level1_color"
+        />
+
+    <TextView
+        android:id="@+id/tv_author"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="IPN"
+        android:layout_toRightOf="@id/iv_img"
+        android:textSize="@dimen/common_textsize_t2"
+        android:layout_marginLeft="12dp"
+        android:layout_below="@+id/tv_title"
+        android:layout_marginTop="3dp"
+        android:textColor="@color/text_level3_color"
         />
 
     <TextView
         android:id="@+id/tv_unread"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:textSize="16sp"
-        tools:text="10"
+        android:textColor="@color/text_level2_color"
+        android:textSize="@dimen/common_textsize_t1"
+        tools:text="5集未播放"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="8dp"
         />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_alignParentBottom="true"
+        android:background="@color/line"
+        />
 </RelativeLayout>

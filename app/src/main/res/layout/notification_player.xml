@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:background="#37383D"
+    >
+
+    <ImageView
+        android:id="@+id/iv_album"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        />
+    <ImageView
+        android:id="@+id/iv_close"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/close_white"
+        android:layout_alignParentRight="true"
+        android:layout_margin="12dp"
+        android:scaleType="fitXY"
+        />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Title"
+        android:layout_toRightOf="@id/iv_album"
+        android:layout_toLeftOf="@id/iv_close"
+        android:gravity="left"
+        android:textColor="@color/text_level4_color"
+        android:textSize="@dimen/common_textsize_t6"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="8dp"
+        android:maxLines="1"
+        />
+
+    <TextView
+        android:id="@+id/tv_author"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="author"
+        android:layout_toRightOf="@id/iv_album"
+        android:layout_below="@id/tv_title"
+        android:textColor="@color/text_level3_color"
+        android:textSize="@dimen/common_textsize_t2"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="0dp"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@id/iv_album"
+        android:orientation="horizontal"
+        android:gravity="center"
+        >
+
+        <ImageView
+            android:id="@+id/iv_pre"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/skip_previous_white"
+            android:scaleType="fitXY"
+            />
+        <ImageView
+            android:id="@+id/iv_play"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/play_circle_outline_white"
+            android:layout_marginLeft="9dp"
+            android:scaleType="fitXY"
+            />
+        <ImageView
+            android:id="@+id/iv_next"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/player_skip_next_white"
+            android:layout_marginLeft="9dp"
+            android:scaleType="fitXY"
+            />
+    </LinearLayout>
+</RelativeLayout>

@@ -124,4 +124,8 @@ class PodcastDetailFragment : MVPFragment<PodcastDetailPresenter, PodcastDetailV
     override fun pauseDownload(item: PodcastItem) {
         presenter.pauseDownload(item)
     }
+
+    override fun onPlayClick(item: PodcastItem) {
+        presenter.startPlay(item)
+    }
 }

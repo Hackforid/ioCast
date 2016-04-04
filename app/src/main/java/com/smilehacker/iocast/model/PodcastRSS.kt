@@ -85,7 +85,7 @@ class PodcastRSS() : Model(), Parcelable {
     companion object {
 
         // for parcelable
-        val CREATOR = createParcel { PodcastRSS(it) }
+        @JvmField val CREATOR = createParcel { PodcastRSS(it) }
 
         // static method
         fun parse(rssXml : String) : PodcastRSS? {
@@ -232,6 +232,10 @@ class PodcastItem() : Model(), Parcelable {
         dest.writeInt(this.duration)
         dest.writeString(this.fileType)
         dest.writeString(this.fileUrl)
+
+        dest.writeLong(this.totalSize)
+        dest.writeLong(this.completeSize)
+        dest.writeInt(this.status)
     }
 
     override fun describeContents(): Int {
@@ -247,6 +251,10 @@ class PodcastItem() : Model(), Parcelable {
         this.duration = parcel.readInt()
         this.fileType = parcel.readString()
         this.fileUrl = parcel.readString()
+
+        this.totalSize = parcel.readLong()
+        this.completeSize = parcel.readLong()
+        this.status = parcel.readInt()
     }
 
     fun saveOrUpdate() {
@@ -265,7 +273,7 @@ class PodcastItem() : Model(), Parcelable {
     }
 
     companion object {
-        val CREATOR = createParcel { PodcastItem(it) }
+        @JvmField val CREATOR = createParcel { PodcastItem(it) }
 
         fun get(id : Long) : PodcastItem? {
             return Select().from(PodcastItem::class.java)

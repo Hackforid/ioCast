@@ -48,6 +48,8 @@ class RssAdapter(val ctx : Context) : RecyclerView.Adapter<RssAdapter.ViewHolder
         val rss = mRssList[position]
 
         holder?.img?.setImageUrl(rss.image)
+        holder?.title?.text = rss.title
+        holder?.author?.text = rss.author
 
         holder?.podcast = rss
         holder?.container?.setTag(R.string.key_podcast, rss)
@@ -70,6 +72,8 @@ class RssAdapter(val ctx : Context) : RecyclerView.Adapter<RssAdapter.ViewHolder
 
         val container by bindView<RelativeLayout>(R.id.container)
         val img by bindView<SimpleDraweeView>(R.id.iv_img)
+        val title by bindView<TextView>(R.id.tv_title)
+        val author by bindView<TextView>(R.id.tv_author)
         val unread by bindView<TextView>(R.id.tv_unread)
 
         var podcast : PodcastRSS? = null
