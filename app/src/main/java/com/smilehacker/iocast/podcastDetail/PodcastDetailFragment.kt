@@ -1,15 +1,22 @@
 package com.smilehacker.iocast.podcastDetail
 
+import android.graphics.Bitmap
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.support.design.widget.CollapsingToolbarLayout
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.graphics.Palette
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
+import android.text.TextUtils
 import android.view.*
-import android.widget.TextView
 import butterknife.bindView
+import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
+import com.facebook.imagepipeline.request.BasePostprocessor
+import com.facebook.imagepipeline.request.ImageRequestBuilder
 import com.smilehacker.iocast.R
 import com.smilehacker.iocast.base.mvp.MVPFragment
 import com.smilehacker.iocast.model.PodcastItem
@@ -26,11 +33,11 @@ class PodcastDetailFragment : MVPFragment<PodcastDetailPresenter, PodcastDetailV
     }
 
     private val mIvImg: SimpleDraweeView by bindView(R.id.iv_img)
-    private val mTvTitle: TextView by bindView(R.id.tv_title)
-    private val mTvAuthor: TextView by bindView(R.id.tv_author)
     private val mRvItems: RecyclerView by bindView(R.id.rv_items)
     private val mToolbar: Toolbar by bindView(R.id.toolbar)
+    private val mToolbarLayout by bindView<CollapsingToolbarLayout>(R.id.toolbarlayout)
 
+    private var mPodcast : PodcastRSS? = null
 
     private val mItemAdapter: PodcastItemAdapter by lazy { PodcastItemAdapter(context) }
 
@@ -50,6 +57,7 @@ class PodcastDetailFragment : MVPFragment<PodcastDetailPresenter, PodcastDetailV
         super.onViewCreated(view, savedInstanceState)
         initActionBar()
         initList()
+        initAlbum()
         presenter.showPodcast()
     }
 
@@ -70,14 +78,69 @@ class PodcastDetailFragment : MVPFragment<PodcastDetailPresenter, PodcastDetailV
     }
 
     override fun showPodcast(podcast: PodcastRSS?) {
+        mPodcast = podcast
+        setPrimaryColor()
+
+        val act = activity as AppCompatActivity
+        act.titleColor = getHostActivity().getColor(R.color.text_level4_color)
         if (podcast != null) {
-            mIvImg.setImageURI(Uri.parse(podcast.image), context)
-            mTvTitle.text = podcast.title
-            mTvAuthor.text = podcast.author
+            act.title = podcast.title
+            setAlbum(podcast.image)
 
             DLog.d("items size = ${podcast.items?.size}")
             mItemAdapter.items = podcast.items
+        } else {
+            act.title = ""
         }
+    }
+
+    private fun initAlbum() {
+    }
+
+    private fun setAlbum(url : String) {
+        if (TextUtils.isEmpty(url)) {
+            return
+        }
+        val uri = Uri.parse(url)
+        val request = ImageRequestBuilder.newBuilderWithSource(uri)
+                        .setPostprocessor(object : BasePostprocessor() {
+                            override fun process(bitmap: Bitmap?) {
+                                super.process(bitmap)
+                                DLog.d("process bitmap")
+                                if (mPodcast?.primaryColor == -1 && bitmap != null) {
+                                    getPrimaryColor(bitmap)
+                                }
+                            }
+                        })
+                        .build()
+        mIvImg.controller = Fresco.newDraweeControllerBuilder()
+                .setImageRequest(request)
+                .setOldController(mIvImg.controller)
+                .build()
+
+    }
+
+    private fun getPrimaryColor(bitmap : Bitmap) {
+        DLog.d("getPrimaryColor")
+        Palette.Builder(bitmap)
+            .maximumColorCount(1)
+            .generate { palette ->
+            palette?.swatches?.get(0)?.let {
+                mPodcast?.updatePrimaryColor(it.rgb)
+                DLog.d("primarycolor = " + it.rgb)
+                setPrimaryColor()
+            }
+        }
+    }
+
+    private fun setPrimaryColor() {
+        if (mPodcast == null || mPodcast?.primaryColor == -1) {
+            return
+        }
+
+
+        mToolbarLayout.contentScrim = ColorDrawable(mPodcast!!.primaryColor)
+
     }
 
     override fun updateSubscribeStatus(podcast: PodcastRSS?) {

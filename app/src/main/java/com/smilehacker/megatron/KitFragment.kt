@@ -113,6 +113,10 @@ abstract class KitFragment : Fragment() {
         mPopExitAnim = AnimationUtils.loadAnimation(mActivity, mPopExit)
     }
 
+    fun getHostActivity() : HostActivity {
+        return mActivity
+    }
+
     private fun handleNoAnim() {
         if (mEnter == 0) {
             mEnter = R.anim.no_anim

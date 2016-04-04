@@ -30,6 +30,7 @@ class PodcastRSS() : Model(), Parcelable {
         const val CATEGORY = "category"
         const val SUBSCRIBE = "subscribe"
         const val FEED_URL = "feed_url"
+        const val PRIMARY_COLOR = "primary_color"
     }
 
     @Column(name = DB.TITLE)
@@ -50,6 +51,8 @@ class PodcastRSS() : Model(), Parcelable {
     var subscribed: Boolean = false
     @Column(name = DB.FEED_URL, index = true, unique = true)
     var feedUrl : String = ""
+    @Column(name = DB.PRIMARY_COLOR)
+    var primaryColor  : Int = -1
 
     var items : ArrayList<PodcastItem>? = null
 
@@ -63,6 +66,7 @@ class PodcastRSS() : Model(), Parcelable {
         dest.writeString(this.category)
         dest.writeString(this.feedUrl)
         dest.writeTypedList<PodcastItem>(this.items)
+        dest.writeInt(this.primaryColor)
 
     }
 
@@ -80,6 +84,7 @@ class PodcastRSS() : Model(), Parcelable {
         this.category = parcel.readString()
         this.feedUrl = parcel.readString()
         this.items = parcel.createTypedArrayList(PodcastItem.CREATOR)
+        this.primaryColor = parcel.readInt()
     }
 
     companion object {
@@ -183,6 +188,11 @@ class PodcastRSS() : Model(), Parcelable {
         }
 
 
+    }
+
+    fun updatePrimaryColor(color : Int) {
+        this.primaryColor = color
+        save()
     }
 }
 
