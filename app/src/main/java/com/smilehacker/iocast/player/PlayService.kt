@@ -6,13 +6,22 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Bitmap
 import android.os.Handler
 import android.os.IBinder
 import android.support.v4.content.LocalBroadcastManager
+import com.facebook.common.executors.CallerThreadExecutor
+import com.facebook.common.references.CloseableReference
+import com.facebook.datasource.DataSource
+import com.facebook.drawee.backends.pipeline.Fresco
+import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber
+import com.facebook.imagepipeline.image.CloseableImage
+import com.facebook.imagepipeline.request.ImageRequest
 import com.google.android.exoplayer.ExoPlaybackException
 import com.google.android.exoplayer.ExoPlayer
 import com.smilehacker.iocast.Constants
 import com.smilehacker.iocast.model.PodcastItem
+import com.smilehacker.iocast.model.PodcastRSS
 import com.smilehacker.iocast.model.player.PLAY_INFO_INTENT_FILTER
 import com.smilehacker.iocast.model.player.PlayInfo
 import com.smilehacker.iocast.model.player.PlayStatus
@@ -113,7 +122,9 @@ class PlayService : Service(), ExoPlayer.Listener {
 
     fun showNotification(isPlaying : Boolean = false) : Notification? {
         mPodcastItem?.let {
-            return PlayerNotification.showPlayerNotification(it.title, it.author, null, isPlaying)
+            val noti = PlayerNotification.showPlayerNotification(it.title, it.author, isPlaying)
+            getAlbum()
+            return noti
         }
         return null
     }
@@ -174,4 +185,36 @@ class PlayService : Service(), ExoPlayer.Listener {
         }
 
     }
+
+    private fun getAlbum() {
+        mPodcastItem ?: return
+        DLog.d("get album podcast id = ${mPodcastItem?.podcastID}")
+        val podcast = PodcastRSS.get(mPodcastItem!!.podcastID) ?: return
+
+        val imageRequest = ImageRequest.fromUri(podcast.image)
+        val imagePipeline = Fresco.getImagePipeline()
+        val dataSource = imagePipeline.fetchDecodedImage(imageRequest, this)
+
+        val subscriber = AlbumBitmapSubscriber(podcast.id)
+
+        dataSource.subscribe(subscriber, CallerThreadExecutor.getInstance())
+    }
+
+    inner class AlbumBitmapSubscriber(val podcastID : Long) : BaseBitmapDataSubscriber() {
+        override fun onNewResultImpl(bitmap: Bitmap?) {
+            DLog.d("onResult")
+            if (bitmap == null) {
+                DLog.d("but null")
+            }
+            if (bitmap != null && mPodcastItem?.podcastID == podcastID) {
+                PlayerNotification.updateNotificationAlbum(bitmap)
+            }
+        }
+
+        override fun onFailureImpl(dataSource: DataSource<CloseableReference<CloseableImage>>?) {
+            val t = dataSource?.failureCause
+            DLog.e(t)
+        }
+    }
+
 }

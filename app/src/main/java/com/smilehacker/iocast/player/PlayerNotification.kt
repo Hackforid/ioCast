@@ -55,10 +55,9 @@ object PlayerNotification {
         mPausePendingIntent = PendingIntent.getBroadcast(App.inst, REQUEST_CODE_PLAY, pauseIntent, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
-    fun showPlayerNotification(title: String, author: String, album: Bitmap?,
+    fun showPlayerNotification(title: String, author: String,
                                isPlaying: Boolean) : Notification {
 
-        mRemoteViews.setImageViewBitmap(R.id.iv_album, album)
         mRemoteViews.setTextViewText(R.id.tv_title, title)
         mRemoteViews.setTextViewText(R.id.tv_author, author)
         builder.mContentTitle = title
@@ -80,6 +79,10 @@ object PlayerNotification {
 
         mNotificationManager?.notify(NOTIFICATION_ID, notification)
         return notification
+    }
+
+    fun updateNotificationAlbum(bitmap : Bitmap) {
+        mRemoteViews.setImageViewBitmap(R.id.iv_album, bitmap)
     }
 
     fun removeNotification() {

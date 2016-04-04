@@ -99,7 +99,7 @@ class PodcastRSS() : Model(), Parcelable {
 
         // DB function
         fun get(id : Long) : PodcastRSS? {
-            val podcast : PodcastRSS = Select().from(PodcastRSS::class.java)
+            val podcast : PodcastRSS? = Select().from(PodcastRSS::class.java)
                     .where("Id=?", id)
                     .executeSingle()
             return podcast
@@ -234,6 +234,7 @@ class PodcastItem() : Model(), Parcelable {
 
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeLong(this.podcastID)
         dest.writeString(this.title)
         dest.writeString(this.description)
         dest.writeString(this.link)
@@ -253,6 +254,7 @@ class PodcastItem() : Model(), Parcelable {
     }
 
     protected constructor(parcel : Parcel) : this() {
+        this.podcastID = parcel.readLong()
         this.title = parcel.readString()
         this.description = parcel.readString()
         this.link = parcel.readString()
