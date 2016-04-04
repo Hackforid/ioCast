@@ -23,6 +23,8 @@ object PlayerNotification {
     private val REQUEST_CODE_PRE = 1
     private val REQUEST_CODE_NEXT = 2
     private val REQUEST_CODE_PLAY = 3
+    private val REQUEST_CODE_PAUSE = 6
+    private val REQUEST_CODE_DESTROY = 4
 
     private var mNotificationManager : NotificationManager? = null
     private val mRemoteViews : RemoteViews by lazy { RemoteViews(Config.PACKAGE_NAME, R.layout.notification_player) }
@@ -52,7 +54,13 @@ object PlayerNotification {
         val pauseIntent = Intent()
         pauseIntent.action = Constants.ACTION_PLAYER_NOTIFICATION
         pauseIntent.putExtra(Constants.KEY_PLAY_SERVICE_COMMAND, PlayService.COMMAND.PAUSE)
-        mPausePendingIntent = PendingIntent.getBroadcast(App.inst, REQUEST_CODE_PLAY, pauseIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        mPausePendingIntent = PendingIntent.getBroadcast(App.inst, REQUEST_CODE_PAUSE, pauseIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+        val destroyIntent = Intent()
+        destroyIntent.action = Constants.ACTION_PLAYER_NOTIFICATION
+        destroyIntent.putExtra(Constants.KEY_PLAY_SERVICE_COMMAND, PlayService.COMMAND.STOP)
+        val destroyPendingIntent = PendingIntent.getBroadcast(App.inst, REQUEST_CODE_DESTROY, destroyIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        mRemoteViews.setOnClickPendingIntent(R.id.iv_close, destroyPendingIntent)
     }
 
     fun showPlayerNotification(title: String, author: String,
@@ -68,7 +76,7 @@ object PlayerNotification {
             mRemoteViews.setImageViewResource(R.id.iv_play, R.drawable.pause_circle_outline_white)
             mRemoteViews.setOnClickPendingIntent(R.id.iv_play, mPausePendingIntent)
         } else {
-            mRemoteViews.setImageViewResource(R.id.iv_play, R.drawable.play_circle_outline)
+            mRemoteViews.setImageViewResource(R.id.iv_play, R.drawable.play_circle_outline_white)
             mRemoteViews.setOnClickPendingIntent(R.id.iv_play, mPlayPendingIntent)
         }
 

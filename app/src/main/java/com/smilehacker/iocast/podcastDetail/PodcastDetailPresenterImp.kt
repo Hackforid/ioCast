@@ -101,7 +101,7 @@ class PodcastDetailPresenterImp : PodcastDetailPresenter() {
             item -> events.find { it.podcastItemId == item.id }?.let {
                 item.totalSize = it.totalSize
                 item.completeSize = it.completeSize
-                item.status = it.status
+                item.downloadStatus = it.status
             }
         }
         view?.showPodcast(podcast)

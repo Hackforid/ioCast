@@ -3,10 +3,7 @@ package com.smilehacker.iocast.util
 import android.util.Xml
 import com.smilehacker.iocast.model.PodcastItem
 import com.smilehacker.iocast.model.PodcastRSS
-import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.debug
 import org.xmlpull.v1.XmlPullParser
-import java.io.InputStream
 import java.io.Reader
 import java.io.StringReader
 import java.util.*
@@ -98,7 +95,7 @@ public class RssParser {
                 "link" -> item.link = parser.nextText()
                 "author" -> item.author = parser.nextText()
                 "pubDate" -> item.setPubDateByRssDate(parser.nextText())
-                "itunes:duration" -> item.duration = parser.nextText().toInt()
+                "itunes:duration" -> item.duration = parser.nextText().toLong()
                 "enclosure" -> {
                     item.fileType = parser.getAttributeValue(null, "type")
                     item.fileUrl = parser.getAttributeValue(null, "url")

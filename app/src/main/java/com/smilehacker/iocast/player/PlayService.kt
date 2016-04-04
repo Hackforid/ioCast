@@ -9,7 +9,6 @@ import android.content.IntentFilter
 import android.graphics.Bitmap
 import android.os.Handler
 import android.os.IBinder
-import android.support.v4.content.LocalBroadcastManager
 import com.facebook.common.executors.CallerThreadExecutor
 import com.facebook.common.references.CloseableReference
 import com.facebook.datasource.DataSource
@@ -22,9 +21,6 @@ import com.google.android.exoplayer.ExoPlayer
 import com.smilehacker.iocast.Constants
 import com.smilehacker.iocast.model.PodcastItem
 import com.smilehacker.iocast.model.PodcastRSS
-import com.smilehacker.iocast.model.player.PLAY_INFO_INTENT_FILTER
-import com.smilehacker.iocast.model.player.PlayInfo
-import com.smilehacker.iocast.model.player.PlayStatus
 import com.smilehacker.iocast.util.DLog
 
 /**
@@ -47,6 +43,7 @@ class PlayService : Service(), ExoPlayer.Listener {
 
     private var mFileNetUrl : String? = null
     private var mPodcastItem : PodcastItem? = null
+    private var mPodcastRss : PodcastRSS? = null
 
     private val mGetPlayInfoRunnable = Runnable { broadcastPlayingInfo() }
 
@@ -71,54 +68,76 @@ class PlayService : Service(), ExoPlayer.Listener {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val command = intent?.getIntExtra(Constants.KEY_PLAY_SERVICE_COMMAND, COMMAND.STOP)
+        val podcastItem = intent?.getParcelableExtra<PodcastItem>(Constants.KEY_PLAY_PODCAST_ITEM)
         when(command) {
-            COMMAND.START -> start()
             COMMAND.PREPARE -> {
-                val podcastItem = intent?.getParcelableExtra<PodcastItem>(Constants.KEY_PLAY_PODCAST_ITEM)
                 if (podcastItem != null) {
+                    mPodcastRss = PodcastRSS.get(podcastItem.podcastID)
                     mPodcastItem = podcastItem
+                    mPodcastItem?.image = mPodcastRss?.image
                     prepare()
                 }
             }
-            COMMAND.PAUSE -> pause()
-            COMMAND.STOP -> stopSelf()
+            COMMAND.START -> {
+                mPodcastItem?.apply { start() }
+            }
+            COMMAND.PAUSE -> {
+                mPodcastItem?.apply {
+                    pause()
+                }
+            }
+            COMMAND.STOP -> stop()
         }
         return super.onStartCommand(intent, flags, startId)
     }
 
-    fun prepare() {
+    private fun refreshNotification() {
+        val notification = showNotification(mPlayer.isPlaying())
+        if (notification != null) {
+            startForeground(PlayerNotification.NOTIFICATION_ID, notification)
+        }
+    }
+
+    private fun prepare() {
         mPodcastItem?.fileUrl?.apply {
-            val notification = showNotification(false)
-            if (notification != null) {
-                startForeground(PlayerNotification.NOTIFICATION_ID, notification)
-            }
             mPlayer.prepare(mPodcastItem!!.fileUrl)
+            refreshNotification()
         }
     }
 
 
-    fun start(pos : Long = 0) {
+    private fun start(pos : Long = 0) {
+        DLog.d("start")
         if (mPodcastItem == null) {
             return
         }
-        showNotification(true)
         mPlayer.start(pos)
+        refreshNotification()
     }
 
-    fun pause() {
+    private fun pause() {
+        DLog.d("pause")
         if (mPodcastItem == null) {
             return
         }
-        showNotification(false)
         mPlayer.pause()
+        refreshNotification()
     }
 
-    fun seekTo(pos : Long) {
+    private fun seekTo(pos : Long) {
         if (mPodcastItem == null) {
             return
         }
         mPlayer.seekTo(pos)
+        refreshNotification()
     }
+
+    private fun stop() {
+        mHandler.removeCallbacks(mGetPlayInfoRunnable)
+        mPlayer.release()
+        stopSelf()
+    }
+
 
     fun showNotification(isPlaying : Boolean = false) : Notification? {
         mPodcastItem?.let {
@@ -135,29 +154,29 @@ class PlayService : Service(), ExoPlayer.Listener {
             ExoPlayer.STATE_IDLE -> {
                 showNotification(false)
             }
-            ExoPlayer.STATE_BUFFERING-> {
-                showNotification(false)
-                mHandler.removeCallbacks(mGetPlayInfoRunnable)
-            }
             ExoPlayer.STATE_PREPARING -> {
                 showNotification(false)
-                mHandler.removeCallbacks(mGetPlayInfoRunnable)
+            }
+            ExoPlayer.STATE_BUFFERING-> {
+                showNotification(false)
             }
             ExoPlayer.STATE_READY -> {
                 showNotification(true)
-                mHandler.removeCallbacks(mGetPlayInfoRunnable)
-                broadcastPlayingInfo()
             }
             ExoPlayer.STATE_ENDED -> {
                 showNotification(false)
-                mHandler.removeCallbacks(mGetPlayInfoRunnable)
             }
 
         }
     }
 
     override fun onPlayWhenReadyCommitted() {
-        DLog.d("onPlayWhenReadyCommitted")
+        DLog.d("onPlayWhenReadyCommitted isPlaying=${mPlayer.isPlaying()}")
+        if (mPlayer.isPlaying()) {
+            broadcastPlayingInfo()
+        } else {
+            mHandler.removeCallbacks(mGetPlayInfoRunnable)
+        }
     }
 
     override fun onPlayerError(error: ExoPlaybackException?) {
@@ -166,21 +185,29 @@ class PlayService : Service(), ExoPlayer.Listener {
     }
 
     private fun broadcastPlayingInfo() {
-        val status = PlayStatus.PLAYING
-        val info = PlayInfo(mPodcastItem!!.title, mPodcastItem!!.author, null, mPlayer.getDuration(), mPlayer.getCurrentPosition(), status)
-        val intent = Intent(PLAY_INFO_INTENT_FILTER)
-        intent.putExtra(Constants.KEY_PLAY_INFO, info)
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+//        val status = PlayStatus.PLAYING
+//        val info = PlayInfo(mPodcastItem!!.title, mPodcastItem!!.author, null, mPlayer.getDuration(), mPlayer.getCurrentPosition(), status)
+//        val intent = Intent(PLAY_INFO_INTENT_FILTER)
+//        intent.putExtra(Constants.KEY_PLAY_INFO, info)
+//        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+
+        if (mPodcastItem != null) {
+        }
+        mPodcastItem?.let {
+            it.playedTime = mPlayer.getCurrentPosition()
+            PlayManager.postPlayState(it, mPlayer.isPlaying())
+        }
         mHandler.postDelayed(mGetPlayInfoRunnable, 1000)
     }
 
     private val mNotificationReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val command = intent?.getIntExtra(Constants.KEY_PLAY_SERVICE_COMMAND, COMMAND.PAUSE)
+            DLog.d("receive notification command $command")
             when(command) {
                 COMMAND.START -> start()
                 COMMAND.PAUSE -> pause()
-                COMMAND.STOP -> stopSelf()
+                COMMAND.STOP -> stop()
             }
         }
 

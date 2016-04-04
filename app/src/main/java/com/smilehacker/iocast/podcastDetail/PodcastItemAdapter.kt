@@ -33,7 +33,7 @@ class PodcastItemAdapter(val ctx : Context) : RecyclerView.Adapter<PodcastItemAd
 
     private val mDownloadClickListener = View.OnClickListener { view ->
         val item = view.getTag(R.string.tag_key_podcast_item) as PodcastItem
-        if (item.status == Downloader.STATUS.STATUS_DOWNLOADING) {
+        if (item.downloadStatus == Downloader.STATUS.STATUS_DOWNLOADING) {
             mCallback?.pauseDownload(item)
         } else {
             mCallback?.startDownload(item)
@@ -67,7 +67,7 @@ class PodcastItemAdapter(val ctx : Context) : RecyclerView.Adapter<PodcastItemAd
         holder?.downloadBtn?.setTag(R.string.tag_key_podcast_item, item)
         holder?.itemView?.setTag(R.string.tag_key_podcast_item, item)
 
-        when (item.status) {
+        when (item.downloadStatus) {
             Downloader.STATUS.STATUS_FAIL -> {
                 holder?.downloadBtn?.text = "FAIL"
             }

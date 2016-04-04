@@ -22,6 +22,14 @@ import com.smilehacker.iocast.util.DLog
 
 class Player(val ctx : Context) : ExoPlayer.Listener {
 
+    object STATE {
+        const val IDLE = ExoPlayer.STATE_IDLE
+        const val PREPARING = ExoPlayer.STATE_PREPARING
+        const val BUFFERING = ExoPlayer.STATE_BUFFERING
+        const val READY = ExoPlayer.STATE_READY
+        const val ENDED = ExoPlayer.STATE_ENDED
+    }
+
     lateinit var mPlayer : ExoPlayer
 
     private var mPlayListener : ExoPlayer.Listener? = null
@@ -118,5 +126,17 @@ class Player(val ctx : Context) : ExoPlayer.Listener {
 
     fun setPlayListener(listener : ExoPlayer.Listener) {
         mPlayListener = listener
+    }
+
+    fun getPlayState() : Int {
+        return mPlayer.playbackState
+    }
+
+    fun stop() {
+        mPlayer.stop()
+    }
+
+    fun release() {
+        mPlayer.release()
     }
 }

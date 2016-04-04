@@ -212,7 +212,7 @@ class PodcastItem() : Model(), Parcelable {
     @Column(name = "pub_date")
     var pubData : DateTime? = null
     @Column(name = "duration")
-    var duration : Int = 0
+    var duration : Long = 0
     @Column(name = "file_type")
     var fileType : String = ""
     @Column(name = "file_url")
@@ -220,12 +220,16 @@ class PodcastItem() : Model(), Parcelable {
 
     var totalSize = 0L
     var completeSize = 0L
-    var status = Downloader.STATUS.STATUS_INIT
+    var downloadStatus = Downloader.STATUS.STATUS_INIT
+
+    var image : String? = null
+    var playedTime: Long = 0
+    var playState : Int = -1
 
     fun setDownloadInfo(totalSize : Long, completeSize : Long, status : Int) {
         this.totalSize = totalSize
         this.completeSize = completeSize
-        this.status = status
+        this.downloadStatus = status
     }
 
     fun setPubDateByRssDate(date : String) {
@@ -240,13 +244,13 @@ class PodcastItem() : Model(), Parcelable {
         dest.writeString(this.link)
         dest.writeString(this.author)
         dest.writeSerializable(pubData)
-        dest.writeInt(this.duration)
+        dest.writeLong(this.duration)
         dest.writeString(this.fileType)
         dest.writeString(this.fileUrl)
 
         dest.writeLong(this.totalSize)
         dest.writeLong(this.completeSize)
-        dest.writeInt(this.status)
+        dest.writeInt(this.downloadStatus)
     }
 
     override fun describeContents(): Int {
@@ -260,13 +264,13 @@ class PodcastItem() : Model(), Parcelable {
         this.link = parcel.readString()
         this.author = parcel.readString()
         this.pubData = parcel.readSerializable() as DateTime?
-        this.duration = parcel.readInt()
+        this.duration = parcel.readLong()
         this.fileType = parcel.readString()
         this.fileUrl = parcel.readString()
 
         this.totalSize = parcel.readLong()
         this.completeSize = parcel.readLong()
-        this.status = parcel.readInt()
+        this.downloadStatus = parcel.readInt()
     }
 
     fun saveOrUpdate() {
