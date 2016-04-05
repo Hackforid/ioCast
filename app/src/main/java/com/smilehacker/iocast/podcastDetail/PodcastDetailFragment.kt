@@ -20,7 +20,7 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder
 import com.smilehacker.iocast.R
 import com.smilehacker.iocast.base.mvp.MVPFragment
 import com.smilehacker.iocast.model.PodcastItem
-import com.smilehacker.iocast.model.PodcastRSS
+import com.smilehacker.iocast.model.Podcast
 import com.smilehacker.iocast.util.DLog
 
 /**
@@ -37,7 +37,7 @@ class PodcastDetailFragment : MVPFragment<PodcastDetailPresenter, PodcastDetailV
     private val mToolbar: Toolbar by bindView(R.id.toolbar)
     private val mToolbarLayout by bindView<CollapsingToolbarLayout>(R.id.toolbarlayout)
 
-    private var mPodcast : PodcastRSS? = null
+    private var mPodcast : Podcast? = null
 
     private val mItemAdapter: PodcastItemAdapter by lazy { PodcastItemAdapter(context) }
 
@@ -77,7 +77,7 @@ class PodcastDetailFragment : MVPFragment<PodcastDetailPresenter, PodcastDetailV
         act.setSupportActionBar(mToolbar)
     }
 
-    override fun showPodcast(podcast: PodcastRSS?) {
+    override fun showPodcast(podcast: Podcast?) {
         mPodcast = podcast
         setPrimaryColor()
 
@@ -143,7 +143,7 @@ class PodcastDetailFragment : MVPFragment<PodcastDetailPresenter, PodcastDetailV
 
     }
 
-    override fun updateSubscribeStatus(podcast: PodcastRSS?) {
+    override fun updateSubscribeStatus(podcast: Podcast?) {
         activity.invalidateOptionsMenu()
     }
 

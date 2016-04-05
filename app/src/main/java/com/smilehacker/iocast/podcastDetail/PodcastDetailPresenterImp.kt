@@ -6,8 +6,9 @@ import com.smilehacker.iocast.cache.MemoryCache
 import com.smilehacker.iocast.download.DownloadEvent
 import com.smilehacker.iocast.download.DownloadManager
 import com.smilehacker.iocast.model.DownloadInfo
+import com.smilehacker.iocast.model.Podcast
 import com.smilehacker.iocast.model.PodcastItem
-import com.smilehacker.iocast.model.PodcastRSS
+import com.smilehacker.iocast.model.manager.PodcastManager
 import com.smilehacker.iocast.player.PlayManager
 import com.smilehacker.iocast.util.DLog
 import com.smilehacker.iocast.util.RxBus
@@ -26,9 +27,9 @@ class PodcastDetailPresenterImp : PodcastDetailPresenter() {
 
     override fun initData(bundle: Bundle) {
         val type = bundle.getInt(Constants.KEY_PODCAST_TYPE, Constants.PODCAST_TYPE.ID)
-        var _podcast : PodcastRSS? = null
+        var _podcast : Podcast? = null
         when(type) {
-            Constants.PODCAST_TYPE.ID -> _podcast = PodcastRSS.getWithItems(bundle.getLong(Constants.KEY_PODCAST_ID, 0))
+            Constants.PODCAST_TYPE.ID -> _podcast = PodcastManager.getPodcastWithItems(bundle.getLong(Constants.KEY_PODCAST_ID, 0))
             Constants.PODCAST_TYPE.MEM -> _podcast = MemoryCache.getPodcastRss()
         }
         if (_podcast == null) {
@@ -41,7 +42,7 @@ class PodcastDetailPresenterImp : PodcastDetailPresenter() {
     }
 
     private fun checkRssExist() {
-        val podcastInDB = PodcastRSS.getByFeedUrl(podcast.feedUrl)
+        val podcastInDB = Podcast.getByFeedUrl(podcast.feedUrl)
         if (podcastInDB != null) {
             podcastInDB.update(podcast, true)
             podcast = podcastInDB
@@ -69,7 +70,7 @@ class PodcastDetailPresenterImp : PodcastDetailPresenter() {
     }
 
     private fun savePodcastRss() {
-        val podcastInDB = PodcastRSS.getByFeedUrl(podcast.feedUrl)
+        val podcastInDB = Podcast.getByFeedUrl(podcast.feedUrl)
         if (podcastInDB == null) {
             podcast.saveWithItems()
         } else {
@@ -122,7 +123,7 @@ class PodcastDetailPresenterImp : PodcastDetailPresenter() {
     }
 
     override fun startPlay(item: PodcastItem) {
-        PlayManager.prepare(item)
+        PlayManager.prepare(item.id)
         PlayManager.start()
     }
 }

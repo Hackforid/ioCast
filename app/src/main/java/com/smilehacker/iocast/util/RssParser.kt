@@ -2,7 +2,7 @@ package com.smilehacker.iocast.util
 
 import android.util.Xml
 import com.smilehacker.iocast.model.PodcastItem
-import com.smilehacker.iocast.model.PodcastRSS
+import com.smilehacker.iocast.model.Podcast
 import org.xmlpull.v1.XmlPullParser
 import java.io.Reader
 import java.io.StringReader
@@ -13,7 +13,7 @@ import java.util.*
  */
 public class RssParser {
 
-    public fun parse(rss : Reader) : PodcastRSS? {
+    public fun parse(rss : Reader) : Podcast? {
         val parser = Xml.newPullParser()
         parser.setInput(rss)
         parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false)
@@ -29,7 +29,7 @@ public class RssParser {
         return null
     }
 
-    public fun parse(rss : String) : PodcastRSS? {
+    public fun parse(rss : String) : Podcast? {
         val parser = Xml.newPullParser()
         parser.setInput(StringReader(rss))
         parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false)
@@ -47,10 +47,10 @@ public class RssParser {
         return null
     }
 
-    fun readChannel(parser : XmlPullParser) : PodcastRSS {
+    fun readChannel(parser : XmlPullParser) : Podcast {
         parser.require(XmlPullParser.START_TAG, null, "channel")
 
-        val podcast = PodcastRSS()
+        val podcast = Podcast()
         podcast.items = ArrayList<PodcastItem>()
         while(parser.next() != XmlPullParser.END_TAG) {
             if (parser.eventType != XmlPullParser.START_TAG) {

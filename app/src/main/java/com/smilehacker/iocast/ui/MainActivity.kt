@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -14,9 +15,9 @@ import com.facebook.drawee.view.SimpleDraweeView
 import com.smilehacker.iocast.Constants
 import com.smilehacker.iocast.R
 import com.smilehacker.iocast.base.newFragment
-import com.smilehacker.iocast.model.PodcastItem
 import com.smilehacker.iocast.model.player.PlayInfo
 import com.smilehacker.iocast.model.player.PlayStatus
+import com.smilehacker.iocast.model.wrap.PodcastWrap
 import com.smilehacker.iocast.player.PlayManager
 import com.smilehacker.iocast.rsslist.RssListFragment
 import com.smilehacker.iocast.util.DLog
@@ -64,30 +65,28 @@ class MainActivity : HostActivity() {
 
     override fun onResume() {
         super.onResume()
-//        LocalBroadcastManager.getInstance(this).registerReceiver(
-//                mPlayMsgBroadcastReceiver, IntentFilter(PLAY_INFO_INTENT_FILTER)
-//        )
-        mPlayerSubscription = RxBus.toObservable(PodcastItem::class.java)
+        mPlayerSubscription = RxBus.toObservable(PodcastWrap::class.java)
                 .subscribe { updateBottomPlayer(it) }
     }
 
-    private fun updateBottomPlayer(item : PodcastItem) {
+    private fun updateBottomPlayer(wrap: PodcastWrap) {
+        DLog.d("wrap = $wrap")
         mVBottomPlayer.visibility = View.VISIBLE
-        mIvAvatar.setImageUrl(item.image, ctx)
-        mTvTitle.text = item.title
-        mTvAuthor.text = item.author
-        if (item.duration == 0L) {
+        mIvAvatar.setImageUrl(wrap.podcast.image, ctx)
+        mTvTitle.text = wrap.podcastItem.title
+        mTvAuthor.text = if (!TextUtils.isEmpty(wrap.podcastItem.author)) wrap.podcastItem.author else wrap.podcast.author
+        if (wrap.podcastItem.duration == 0L) {
             mProgressBar.progress = 0
         } else{
-            mProgressBar.progress = (item.playedTime / item.duration * 100f).toInt()
+            mProgressBar.progress = (wrap.podcastItem.playedTime / wrap.podcastItem.duration * 100f).toInt()
         }
-        when(item.playState) {
+        when(wrap.playState) {
             PlayManager.SIMPLE_STATE_PLAYING -> {
                 mBtnPlay.onClick { PlayManager.pause() }
                 mBtnPlay.setImageResource(R.drawable.pause_circle_outline)
             }
             PlayManager.SIMPLE_STATE_PAUSE -> {
-                mBtnPlay.onClick { PlayManager.start(item.playedTime) }
+                mBtnPlay.onClick { PlayManager.start(wrap.podcastItem.playedTime) }
                 mBtnPlay.setImageResource(R.drawable.play_circle_outline)
             }
         }

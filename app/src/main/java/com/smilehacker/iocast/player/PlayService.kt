@@ -19,8 +19,8 @@ import com.facebook.imagepipeline.request.ImageRequest
 import com.google.android.exoplayer.ExoPlaybackException
 import com.google.android.exoplayer.ExoPlayer
 import com.smilehacker.iocast.Constants
-import com.smilehacker.iocast.model.PodcastItem
-import com.smilehacker.iocast.model.PodcastRSS
+import com.smilehacker.iocast.model.manager.PodcastManager
+import com.smilehacker.iocast.model.wrap.PodcastWrap
 import com.smilehacker.iocast.util.DLog
 
 /**
@@ -41,11 +41,9 @@ class PlayService : Service(), ExoPlayer.Listener {
     private var mPlayer : Player = Player(this)
     private val mHandler : Handler = Handler()
 
-    private var mFileNetUrl : String? = null
-    private var mPodcastItem : PodcastItem? = null
-    private var mPodcastRss : PodcastRSS? = null
+    private var mPodcastWrap : PodcastWrap? = null
 
-    private val mGetPlayInfoRunnable = Runnable { broadcastPlayingInfo() }
+    private val mGetPlayInfoRunnable = Runnable { scheduleGetPlayState() }
 
     init {
         mPlayer.setPlayListener(this)
@@ -68,23 +66,25 @@ class PlayService : Service(), ExoPlayer.Listener {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val command = intent?.getIntExtra(Constants.KEY_PLAY_SERVICE_COMMAND, COMMAND.STOP)
-        val podcastItem = intent?.getParcelableExtra<PodcastItem>(Constants.KEY_PLAY_PODCAST_ITEM)
         when(command) {
             COMMAND.PREPARE -> {
-                if (podcastItem != null) {
-                    mPodcastRss = PodcastRSS.get(podcastItem.podcastID)
-                    mPodcastItem = podcastItem
-                    mPodcastItem?.image = mPodcastRss?.image
-                    prepare()
+                val podcastItemId = intent?.getLongExtra(Constants.KEY_PODCAST_ITEM_ID, -1L)
+                if (podcastItemId != -1L) {
+                    mPodcastWrap = PodcastManager.getPodcastWrap(podcastItemId!!)
+                    if (mPodcastWrap == null) {
+                        stop()
+                    } else {
+                        prepare()
+                    }
+                } else {
+                    stop()
                 }
             }
             COMMAND.START -> {
-                mPodcastItem?.apply { start() }
+                start()
             }
             COMMAND.PAUSE -> {
-                mPodcastItem?.apply {
-                    pause()
-                }
+                pause()
             }
             COMMAND.STOP -> stop()
         }
@@ -99,51 +99,48 @@ class PlayService : Service(), ExoPlayer.Listener {
     }
 
     private fun prepare() {
-        mPodcastItem?.fileUrl?.apply {
-            mPlayer.prepare(mPodcastItem!!.fileUrl)
+        mPodcastWrap?.podcastItem?.fileUrl?.let {
+            mPlayer.prepare(it)
             refreshNotification()
         }
     }
 
 
-    private fun start(pos : Long = 0) {
+    private fun start() {
         DLog.d("start")
-        if (mPodcastItem == null) {
-            return
+        mPodcastWrap?.let {
+            mPlayer.start(it.podcastItem.playedTime)
+            refreshNotification()
         }
-        mPlayer.start(pos)
-        refreshNotification()
     }
 
     private fun pause() {
         DLog.d("pause")
-        if (mPodcastItem == null) {
-            return
-        }
         mPlayer.pause()
+        mPodcastWrap?.podcastItem?.updatePlayedTime(mPlayer.getCurrentPosition())
         refreshNotification()
     }
 
     private fun seekTo(pos : Long) {
-        if (mPodcastItem == null) {
-            return
-        }
         mPlayer.seekTo(pos)
         refreshNotification()
     }
 
     private fun stop() {
         mHandler.removeCallbacks(mGetPlayInfoRunnable)
+        pause()
         mPlayer.release()
+        broadcastPlayingInfo()
         stopSelf()
     }
 
 
     fun showNotification(isPlaying : Boolean = false) : Notification? {
-        mPodcastItem?.let {
-            val noti = PlayerNotification.showPlayerNotification(it.title, it.author, isPlaying)
+        mPodcastWrap?.let {
+
+            val notification = PlayerNotification.showPlayerNotification(it.podcastItem.title, it.podcastItem.author, isPlaying)
             getAlbum()
-            return noti
+            return notification
         }
         return null
     }
@@ -173,9 +170,10 @@ class PlayService : Service(), ExoPlayer.Listener {
     override fun onPlayWhenReadyCommitted() {
         DLog.d("onPlayWhenReadyCommitted isPlaying=${mPlayer.isPlaying()}")
         if (mPlayer.isPlaying()) {
-            broadcastPlayingInfo()
+            scheduleGetPlayState()
         } else {
             mHandler.removeCallbacks(mGetPlayInfoRunnable)
+            broadcastPlayingInfo()
         }
     }
 
@@ -184,20 +182,25 @@ class PlayService : Service(), ExoPlayer.Listener {
         DLog.e(error)
     }
 
-    private fun broadcastPlayingInfo() {
-//        val status = PlayStatus.PLAYING
-//        val info = PlayInfo(mPodcastItem!!.title, mPodcastItem!!.author, null, mPlayer.getDuration(), mPlayer.getCurrentPosition(), status)
-//        val intent = Intent(PLAY_INFO_INTENT_FILTER)
-//        intent.putExtra(Constants.KEY_PLAY_INFO, info)
-//        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
-
-        if (mPodcastItem != null) {
+    private var mLastUpdatePlayedTime : Long = 0L
+    private fun scheduleGetPlayState() {
+        mPodcastWrap?.let {
+            val time = System.currentTimeMillis()
+            if (time - mLastUpdatePlayedTime > 5000) {
+                mLastUpdatePlayedTime = time
+                it.podcastItem.updatePlayedTime(mPlayer.getCurrentPosition())
+            } else {
+                it.podcastItem.playedTime = mPlayer.getCurrentPosition()
+            }
+            broadcastPlayingInfo()
+            mHandler.postDelayed(mGetPlayInfoRunnable, 1000)
         }
-        mPodcastItem?.let {
-            it.playedTime = mPlayer.getCurrentPosition()
+    }
+
+    private fun broadcastPlayingInfo() {
+        mPodcastWrap?.let {
             PlayManager.postPlayState(it, mPlayer.isPlaying())
         }
-        mHandler.postDelayed(mGetPlayInfoRunnable, 1000)
     }
 
     private val mNotificationReceiver = object : BroadcastReceiver() {
@@ -214,17 +217,15 @@ class PlayService : Service(), ExoPlayer.Listener {
     }
 
     private fun getAlbum() {
-        mPodcastItem ?: return
-        DLog.d("get album podcast id = ${mPodcastItem?.podcastID}")
-        val podcast = PodcastRSS.get(mPodcastItem!!.podcastID) ?: return
+        mPodcastWrap?.let {
+            val imageRequest = ImageRequest.fromUri(it.podcast.image)
+            val imagePipeline = Fresco.getImagePipeline()
+            val dataSource = imagePipeline.fetchDecodedImage(imageRequest, this)
 
-        val imageRequest = ImageRequest.fromUri(podcast.image)
-        val imagePipeline = Fresco.getImagePipeline()
-        val dataSource = imagePipeline.fetchDecodedImage(imageRequest, this)
+            val subscriber = AlbumBitmapSubscriber(it.podcast.id)
 
-        val subscriber = AlbumBitmapSubscriber(podcast.id)
-
-        dataSource.subscribe(subscriber, CallerThreadExecutor.getInstance())
+            dataSource.subscribe(subscriber, CallerThreadExecutor.getInstance())
+        }
     }
 
     inner class AlbumBitmapSubscriber(val podcastID : Long) : BaseBitmapDataSubscriber() {
@@ -233,7 +234,7 @@ class PlayService : Service(), ExoPlayer.Listener {
             if (bitmap == null) {
                 DLog.d("but null")
             }
-            if (bitmap != null && mPodcastItem?.podcastID == podcastID) {
+            if (bitmap != null && mPodcastWrap?.podcast?.id == podcastID) {
                 PlayerNotification.updateNotificationAlbum(bitmap)
             }
         }

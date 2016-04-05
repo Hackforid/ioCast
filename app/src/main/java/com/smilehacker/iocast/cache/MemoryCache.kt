@@ -1,6 +1,6 @@
 package com.smilehacker.iocast.cache
 
-import com.smilehacker.iocast.model.PodcastRSS
+import com.smilehacker.iocast.model.Podcast
 import java.lang.ref.WeakReference
 
 /**
@@ -8,7 +8,7 @@ import java.lang.ref.WeakReference
  */
 object MemoryCache : Cache {
 
-    private var mRss : WeakReference<PodcastRSS>? = null
+    private var mRss : WeakReference<Podcast>? = null
 
     override fun get(key: String): String? {
         throw UnsupportedOperationException()
@@ -18,11 +18,11 @@ object MemoryCache : Cache {
         throw UnsupportedOperationException()
     }
 
-    fun cachePodcastRss(rss : PodcastRSS?) {
-        mRss = WeakReference<PodcastRSS>(rss)
+    fun cachePodcastRss(rss : Podcast?) {
+        mRss = WeakReference<Podcast>(rss)
     }
 
-    fun getPodcastRss() : PodcastRSS? {
+    fun getPodcastRss() : Podcast? {
         return mRss?.get()
     }
 }

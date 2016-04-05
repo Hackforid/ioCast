@@ -22,7 +22,7 @@
                    android:value="com.smilehacker.iocast.util.db.DateTimeSerializer" />
         <meta-data
             android:name="AA_MODELS"
-            android:value="com.smilehacker.iocast.model.PodcastRSS,
+            android:value="com.smilehacker.iocast.model.Podcast,
                            com.smilehacker.iocast.model.PodcastItem,
                            com.smilehacker.iocast.model.DownloadInfo" />
 

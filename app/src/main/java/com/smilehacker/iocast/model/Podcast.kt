@@ -16,8 +16,8 @@ import java.util.*
 /**
  * Created by kleist on 15/11/5.
  */
-@Table(name = PodcastRSS.DB.TABLENAME)
-class PodcastRSS() : Model(), Parcelable {
+@Table(name = Podcast.DB.TABLENAME)
+class Podcast() : Model(), Parcelable {
 
     object DB {
         const val TABLENAME = "podcast"
@@ -90,51 +90,51 @@ class PodcastRSS() : Model(), Parcelable {
     companion object {
 
         // for parcelable
-        @JvmField val CREATOR = createParcel { PodcastRSS(it) }
+        @JvmField val CREATOR = createParcel { Podcast(it) }
 
         // static method
-        fun parse(rssXml : String) : PodcastRSS? {
+        fun parse(rssXml : String) : Podcast? {
             return RssParser().parse(rssXml)
         }
 
         // DB function
-        fun get(id : Long) : PodcastRSS? {
-            val podcast : PodcastRSS? = Select().from(PodcastRSS::class.java)
+        fun get(id : Long) : Podcast? {
+            val podcast : Podcast? = Select().from(Podcast::class.java)
                     .where("Id=?", id)
                     .executeSingle()
             return podcast
         }
 
-        fun getByFeedUrl(url : String) : PodcastRSS? {
-            return Select().from(PodcastRSS::class.java)
+        fun getByFeedUrl(url : String) : Podcast? {
+            return Select().from(Podcast::class.java)
                     .where("${DB.FEED_URL} = ?", url)
                     .executeSingle()
         }
 
-        fun getByItemIds(ids : MutableList<Long>) : MutableList<PodcastRSS> {
+        fun getByItemIds(ids : MutableList<Long>) : MutableList<Podcast> {
             val strIds = ids.joinToString(",", "(", ")")
-            val podcasts = Select().from(PodcastRSS::class.java)
+            val podcasts = Select().from(Podcast::class.java)
                     .where("Id IN $strIds")
-                    .execute<PodcastRSS>()
+                    .execute<Podcast>()
             return podcasts
         }
 
-        fun getWithItems(id : Long) : PodcastRSS? {
-            val podcast : PodcastRSS = Select().from(PodcastRSS::class.java)
+        fun getWithItems(id : Long) : Podcast? {
+            val podcast : Podcast = Select().from(Podcast::class.java)
                     .where("Id=?", id)
                     .executeSingle()
             podcast?.items = PodcastItem.getByPodcastID(id)
             return podcast
         }
 
-        fun getAll(subscribed : Boolean? = null) : List<PodcastRSS> {
+        fun getAll(subscribed : Boolean? = null) : List<Podcast> {
             if (subscribed != null) {
-                return Select().from(PodcastRSS::class.java)
+                return Select().from(Podcast::class.java)
                         .where("${DB.SUBSCRIBE} = ?", 1)
-                        .execute<PodcastRSS>()
+                        .execute<Podcast>()
             } else{
-                return Select().from(PodcastRSS::class.java)
-                        .execute<PodcastRSS>()
+                return Select().from(Podcast::class.java)
+                        .execute<Podcast>()
             }
         }
 
@@ -145,7 +145,7 @@ class PodcastRSS() : Model(), Parcelable {
         this.saveWithItems()
     }
 
-    fun update(podcast : PodcastRSS, withItem : Boolean = true, withSubscribed : Boolean = false) {
+    fun update(podcast : Podcast, withItem : Boolean = true, withSubscribed : Boolean = false) {
         this.title = podcast.title
         this.link = podcast.link
         this.description = podcast.description
@@ -164,7 +164,7 @@ class PodcastRSS() : Model(), Parcelable {
         }
     }
 
-    fun saveWithItems() : PodcastRSS {
+    fun saveWithItems() : Podcast {
         ActiveAndroid.beginTransaction()
         this.save()
         items?.let{ updateItems(it) }
@@ -199,7 +199,12 @@ class PodcastRSS() : Model(), Parcelable {
 @Table(name = "podcast_item")
 class PodcastItem() : Model(), Parcelable {
 
-    @Column(name = "podcast_id", index = true)
+    object DB {
+        const val PODCAST_ID = "podcast_id"
+        const val PLAYED_TIME = "played_time"
+    }
+
+    @Column(name = DB.PODCAST_ID, index = true)
     var podcastID : Long = 0
     @Column(name = "title", index = true, unique = true)
     var title : String = ""
@@ -217,14 +222,13 @@ class PodcastItem() : Model(), Parcelable {
     var fileType : String = ""
     @Column(name = "file_url")
     var fileUrl : String = ""
+    @Column(name = DB.PLAYED_TIME)
+    var playedTime: Long = -1L
 
     var totalSize = 0L
     var completeSize = 0L
     var downloadStatus = Downloader.STATUS.STATUS_INIT
 
-    var image : String? = null
-    var playedTime: Long = 0
-    var playState : Int = -1
 
     fun setDownloadInfo(totalSize : Long, completeSize : Long, status : Int) {
         this.totalSize = totalSize
@@ -238,6 +242,7 @@ class PodcastItem() : Model(), Parcelable {
 
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeLong(this.id)
         dest.writeLong(this.podcastID)
         dest.writeString(this.title)
         dest.writeString(this.description)
@@ -247,6 +252,7 @@ class PodcastItem() : Model(), Parcelable {
         dest.writeLong(this.duration)
         dest.writeString(this.fileType)
         dest.writeString(this.fileUrl)
+        dest.writeLong(this.playedTime)
 
         dest.writeLong(this.totalSize)
         dest.writeLong(this.completeSize)
@@ -258,6 +264,7 @@ class PodcastItem() : Model(), Parcelable {
     }
 
     protected constructor(parcel : Parcel) : this() {
+
         this.podcastID = parcel.readLong()
         this.title = parcel.readString()
         this.description = parcel.readString()
@@ -267,6 +274,7 @@ class PodcastItem() : Model(), Parcelable {
         this.duration = parcel.readLong()
         this.fileType = parcel.readString()
         this.fileUrl = parcel.readString()
+        this.playedTime = parcel.readLong()
 
         this.totalSize = parcel.readLong()
         this.completeSize = parcel.readLong()
@@ -285,7 +293,15 @@ class PodcastItem() : Model(), Parcelable {
         this.duration = item.duration
         this.fileType = item.fileType
         this.fileUrl = item.fileUrl
+        if (item.playedTime != -1L) {
+            this.playedTime = item.playedTime
+        }
         this.save()
+    }
+
+    fun updatePlayedTime(time : Long) {
+        this.playedTime = time
+        save()
     }
 
     companion object {

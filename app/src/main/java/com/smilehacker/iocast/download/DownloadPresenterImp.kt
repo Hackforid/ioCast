@@ -2,7 +2,7 @@ package com.smilehacker.iocast.download
 
 import com.smilehacker.iocast.model.DownloadInfo
 import com.smilehacker.iocast.model.PodcastItem
-import com.smilehacker.iocast.model.PodcastRSS
+import com.smilehacker.iocast.model.Podcast
 import java.util.*
 
 /**
@@ -28,7 +28,7 @@ class DownloadPresenterImp : DownloadPresenter() {
                 podcastIds.add(it.podcastID)
             }
         }
-        val podcasts = PodcastRSS.getByItemIds(podcastIds)
+        val podcasts = Podcast.getByItemIds(podcastIds)
 
 
         val fileList = ArrayList<PodcastFile>(downloadList.size)

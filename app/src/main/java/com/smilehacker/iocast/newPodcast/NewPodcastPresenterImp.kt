@@ -2,7 +2,7 @@ package com.smilehacker.iocast.newPodcast
 
 import android.text.TextUtils
 import com.smilehacker.iocast.cache.MemoryCache
-import com.smilehacker.iocast.model.PodcastRSS
+import com.smilehacker.iocast.model.Podcast
 import com.smilehacker.iocast.net.RssDownloader
 import com.smilehacker.iocast.util.DLog
 import com.smilehacker.iocast.util.url.prepareURL
@@ -38,7 +38,7 @@ class NewPodcastPresenterImp : NewPodcastPresenter() {
                 .subscribeOn(Schedulers.io())
 
                 .observeOn(AndroidSchedulers.mainThread())
-                .map { rss -> PodcastRSS.parse(rss) }
+                .map { rss -> Podcast.parse(rss) }
                 .subscribe(
                         {   it?.feedUrl = url
                             MemoryCache.cachePodcastRss(it)

@@ -10,7 +10,7 @@ import android.widget.TextView
 import butterknife.bindView
 import com.facebook.drawee.view.SimpleDraweeView
 import com.smilehacker.iocast.R
-import com.smilehacker.iocast.model.PodcastRSS
+import com.smilehacker.iocast.model.Podcast
 import com.smilehacker.iocast.util.setImageUrl
 import java.util.*
 
@@ -20,7 +20,7 @@ import java.util.*
 
 class RssAdapter(val ctx : Context) : RecyclerView.Adapter<RssAdapter.ViewHolder>() {
 
-    private val mRssList = ArrayList<PodcastRSS>()
+    private val mRssList = ArrayList<Podcast>()
     private val mLayoutInflater : LayoutInflater by lazy { LayoutInflater.from(ctx) }
 
     private  lateinit var mOnItemClickListener : View.OnClickListener
@@ -29,7 +29,7 @@ class RssAdapter(val ctx : Context) : RecyclerView.Adapter<RssAdapter.ViewHolder
 
     init {
         mOnItemClickListener  = View.OnClickListener { v ->
-            val podcast = v?.getTag(R.string.key_podcast) as PodcastRSS
+            val podcast = v?.getTag(R.string.key_podcast) as Podcast
             mCallback?.onItemClick(podcast)
         }
     }
@@ -38,7 +38,7 @@ class RssAdapter(val ctx : Context) : RecyclerView.Adapter<RssAdapter.ViewHolder
         mCallback = callback
     }
 
-    fun setList(list : List<PodcastRSS>) {
+    fun setList(list : List<Podcast>) {
         mRssList.clear()
         mRssList.addAll(list)
         notifyDataSetChanged()
@@ -65,7 +65,7 @@ class RssAdapter(val ctx : Context) : RecyclerView.Adapter<RssAdapter.ViewHolder
     }
 
     interface RssListCallback {
-        fun onItemClick(rss : PodcastRSS)
+        fun onItemClick(rss : Podcast)
     }
 
     class ViewHolder : RecyclerView.ViewHolder {
@@ -76,7 +76,7 @@ class RssAdapter(val ctx : Context) : RecyclerView.Adapter<RssAdapter.ViewHolder
         val author by bindView<TextView>(R.id.tv_author)
         val unread by bindView<TextView>(R.id.tv_unread)
 
-        var podcast : PodcastRSS? = null
+        var podcast : Podcast? = null
 
         constructor(itemView: View?) : super(itemView) {
 

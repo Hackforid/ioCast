@@ -11,7 +11,7 @@ import com.smilehacker.iocast.Constants
 import com.smilehacker.iocast.R
 import com.smilehacker.iocast.base.mvp.MVPFragment
 import com.smilehacker.iocast.base.newFragment
-import com.smilehacker.iocast.model.PodcastRSS
+import com.smilehacker.iocast.model.Podcast
 import com.smilehacker.iocast.newPodcast.NewPodcastFragment
 import com.smilehacker.iocast.podcastDetail.PodcastDetailFragment
 import com.smilehacker.iocast.util.DLog
@@ -56,7 +56,7 @@ class RssListFragment : MVPFragment<RssListPresenter, RssListViewer>(), RssListV
 
     private fun init() {
         mRssAdapter.setCallback(object : RssAdapter.RssListCallback {
-            override fun onItemClick(rss: PodcastRSS) {
+            override fun onItemClick(rss: Podcast) {
                 jumpToPodcastView(rss.id)
             }
         })
@@ -71,7 +71,7 @@ class RssListFragment : MVPFragment<RssListPresenter, RssListViewer>(), RssListV
         (activity as AppCompatActivity).setSupportActionBar(mToolbar)
     }
 
-    override fun showItems(items: List<PodcastRSS>) {
+    override fun showItems(items: List<Podcast>) {
         mRssAdapter.setList(items)
     }
 
