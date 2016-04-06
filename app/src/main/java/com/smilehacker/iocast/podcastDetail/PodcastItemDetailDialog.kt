@@ -2,13 +2,16 @@ package com.smilehacker.iocast.podcastDetail
 
 import android.content.Context
 import android.os.Build
+import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.BottomSheetDialog
 import android.support.design.widget.FloatingActionButton
 import android.view.LayoutInflater
+import android.view.View
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.widget.TextView
 import butterknife.bindView
+import com.smilehacker.iocast.AppInfo
 import com.smilehacker.iocast.R
 import com.smilehacker.iocast.model.PodcastItem
 import com.smilehacker.iocast.util.HtmlConverter
@@ -27,6 +30,9 @@ class PodcastItemDetailDialog(val ctx : Context) : BottomSheetDialog(ctx) {
     init {
         val view = LayoutInflater.from(ctx).inflate(R.layout.dialog_podcastdetail_bottom_sheet, null)
         this.setContentView(view)
+        val behavior = BottomSheetBehavior.from(view.parent as View)
+        val peekHeight = (AppInfo.getDisplayMetrics().heightPixels / 3f * 2).toInt()
+        behavior.peekHeight = peekHeight
     }
 
     fun build(item : PodcastItem) : PodcastItemDetailDialog {
