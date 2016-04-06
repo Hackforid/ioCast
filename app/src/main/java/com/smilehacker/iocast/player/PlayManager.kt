@@ -14,6 +14,8 @@ object PlayManager {
     const val SIMPLE_STATE_PLAYING = 1
     const val SIMPLE_STATE_PAUSE = 2
 
+    var isPlaying = false
+
     fun prepare(podcastItemId: Long) {
         App.inst.startService<PlayService>(
                 Constants.KEY_PLAY_SERVICE_COMMAND to PlayService.COMMAND.PREPARE,

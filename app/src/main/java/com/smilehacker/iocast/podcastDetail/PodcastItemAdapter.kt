@@ -11,6 +11,7 @@ import butterknife.bindView
 import com.smilehacker.iocast.R
 import com.smilehacker.iocast.download.Downloader
 import com.smilehacker.iocast.model.PodcastItem
+import com.smilehacker.iocast.util.TimeUtils
 import java.util.*
 
 /**
@@ -61,8 +62,12 @@ class PodcastItemAdapter(val ctx : Context) : RecyclerView.Adapter<PodcastItemAd
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
         val item = mItems[position]
         holder?.title?.text = item.title
-        holder?.duration?.text = item.duration.toString()
-        holder?.pubDate?.text = item.pubData.toString()
+        if (item.pubData != null) {
+            holder?.pubDate?.text = item.pubData?.toString("M月d日")
+        } else {
+            holder?.pubDate?.text = ""
+        }
+        holder?.duration?.text = TimeUtils.secondToReadableString(item.duration)
 
         holder?.downloadBtn?.setTag(R.string.tag_key_podcast_item, item)
         holder?.itemView?.setTag(R.string.tag_key_podcast_item, item)

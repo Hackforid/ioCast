@@ -20,6 +20,8 @@
     <color name="text_level3_color">#aaaaaa</color>
     <!--四级文字 暗提示-->
     <color name="text_level4_color">#dddddd</color>
+    <!--四级文字 暗提示-->
+    <color name="text_white_color">#ffffff</color>
     <!--链接颜色-->
     <color name="text_link_color">#00c0ff</color>
     <!--特殊强调文字-->
@@ -37,4 +39,5 @@
 
     <color name="blu_100">#2384e8</color>
     <color name="blu_80">#4f9de3</color>
+
 </resources>

@@ -49,6 +49,7 @@
                 android:id="@+id/rv_items"
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"
+                tools:listitem="@layout/podcastdetail_podcast_item"
                 />
         </RelativeLayout>
     </android.support.design.widget.CoordinatorLayout>

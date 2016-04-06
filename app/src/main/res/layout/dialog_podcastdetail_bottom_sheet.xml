@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <RelativeLayout
+        android:id="@+id/vg_header"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="@color/blu_80"
+        android:elevation="3dp"
+        >
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/common_textsize_t4"
+            android:textColor="@color/text_white_color"
+            android:text="#1 Title"
+            android:layout_marginTop="18dp"
+            android:layout_marginLeft="12dp"
+            />
+
+        <TextView
+            android:id="@+id/tv_author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_title"
+            android:textSize="@dimen/common_textsize_t2"
+            android:textColor="@color/text_white_color"
+            android:text="李如意"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="15dp"
+            />
+    </RelativeLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btn_play"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="92dp"
+        />
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/vg_header"
+        android:background="@color/background_white"
+        android:descendantFocusability="blocksDescendants"
+        android:paddingTop="30dp"
+        android:clipToPadding="false"
+        >
+        <WebView
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+        </WebView>
+    </android.support.v4.widget.NestedScrollView>
+
+
+</RelativeLayout>

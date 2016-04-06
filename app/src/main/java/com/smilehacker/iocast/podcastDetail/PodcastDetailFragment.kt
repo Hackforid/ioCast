@@ -19,8 +19,8 @@ import com.facebook.imagepipeline.request.BasePostprocessor
 import com.facebook.imagepipeline.request.ImageRequestBuilder
 import com.smilehacker.iocast.R
 import com.smilehacker.iocast.base.mvp.MVPFragment
-import com.smilehacker.iocast.model.PodcastItem
 import com.smilehacker.iocast.model.Podcast
+import com.smilehacker.iocast.model.PodcastItem
 import com.smilehacker.iocast.util.DLog
 
 /**
@@ -189,6 +189,10 @@ class PodcastDetailFragment : MVPFragment<PodcastDetailPresenter, PodcastDetailV
     }
 
     override fun onPlayClick(item: PodcastItem) {
-        presenter.startPlay(item)
+        //presenter.startPlay(item)
+        PodcastItemDetailDialog(getHostActivity())
+                .build(item)
+                .setListener { presenter.startPlay(item) }
+                .show()
     }
 }
