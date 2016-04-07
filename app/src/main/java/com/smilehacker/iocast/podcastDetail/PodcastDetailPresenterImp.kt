@@ -8,8 +8,8 @@ import com.smilehacker.iocast.download.DownloadManager
 import com.smilehacker.iocast.model.DownloadInfo
 import com.smilehacker.iocast.model.Podcast
 import com.smilehacker.iocast.model.PodcastItem
-import com.smilehacker.iocast.model.manager.PodcastManager
-import com.smilehacker.iocast.player.PlayManager
+import com.smilehacker.iocast.player.PlayController
+import com.smilehacker.iocast.store.PodcastStore
 import com.smilehacker.iocast.util.DLog
 import com.smilehacker.iocast.util.RxBus
 import rx.Subscription
@@ -29,7 +29,7 @@ class PodcastDetailPresenterImp : PodcastDetailPresenter() {
         val type = bundle.getInt(Constants.KEY_PODCAST_TYPE, Constants.PODCAST_TYPE.ID)
         var _podcast : Podcast? = null
         when(type) {
-            Constants.PODCAST_TYPE.ID -> _podcast = PodcastManager.getPodcastWithItems(bundle.getLong(Constants.KEY_PODCAST_ID, 0))
+            Constants.PODCAST_TYPE.ID -> _podcast = PodcastStore.getPodcastWithItems(bundle.getLong(Constants.KEY_PODCAST_ID, 0))
             Constants.PODCAST_TYPE.MEM -> _podcast = MemoryCache.getPodcastRss()
         }
         if (_podcast == null) {
@@ -123,7 +123,6 @@ class PodcastDetailPresenterImp : PodcastDetailPresenter() {
     }
 
     override fun startPlay(item: PodcastItem) {
-        PlayManager.prepare(item.id)
-        PlayManager.start()
+        PlayController.prepareAndStart(item.id)
     }
 }

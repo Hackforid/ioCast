@@ -16,10 +16,12 @@ import android.widget.Toast
  */
 class Fragmentation(val mActivity: HostActivity, val mContainerId: Int) {
 
+
+
     private var mFragmentManager = mActivity.supportFragmentManager
     private val mHandler = Handler()
 
-    private var mCurrentTime : Long = 0
+    private var mCurrentTime: Long = 0
 
 
     companion object {
@@ -33,7 +35,7 @@ class Fragmentation(val mActivity: HostActivity, val mContainerId: Int) {
         val KEY_RESULT_BUNDLE = "key_bundle"
         val KEY_IS_ROOT = "key_is_root"
 
-        fun getTopFragment(fragmentManager: FragmentManager) : KitFragment? {
+        fun getTopFragment(fragmentManager: FragmentManager): KitFragment? {
             val fragments = fragmentManager.fragments
             if (fragments != null) {
                 for (i in (fragments.size - 1) downTo 0) {
@@ -135,10 +137,10 @@ class Fragmentation(val mActivity: HostActivity, val mContainerId: Int) {
 
         var resultCode = 0
         var requestCode = 0
-        var data : Bundle? = null
+        var data: Bundle? = null
 
         if (fragments != null) {
-            for (i in (fragments.size)-1 downTo 0) {
+            for (i in (fragments.size) - 1 downTo 0) {
                 val fragment = fragments[i]
                 if (fragment != null && fragment is KitFragment) {
                     val kitFrg = fragment

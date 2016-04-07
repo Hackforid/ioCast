@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.percent.PercentRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/vg_header"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_heightPercent="60%"
+        >
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/iv_album"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:placeholderImage="@color/background_gray"
+            />
+
+    </RelativeLayout>
+    
+    <RelativeLayout
+        android:id="@+id/vg_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_heightPercent="40%"
+        android:layout_alignParentBottom="true"
+        android:background="@color/background_white"
+        >
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="你妹啊烦死了"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:textSize="@dimen/common_textsize_t4"
+            android:textColor="@color/text_level1_color"
+            />
+        <TextView
+            android:id="@+id/tv_author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="小明"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:textSize="@dimen/common_textsize_t2"
+            android:textColor="@color/text_level2_color"
+            android:layout_below="@id/tv_title"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_below="@id/tv_author"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            >
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/chevron_double_left"
+                android:scaleType="fitCenter"
+                />
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/play_black"
+                android:scaleType="fitCenter"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                />
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/chevron_double_right"
+                android:scaleType="fitCenter"
+                />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_above="@id/vg_bottom"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        />
+
+</android.support.percent.PercentRelativeLayout>
+

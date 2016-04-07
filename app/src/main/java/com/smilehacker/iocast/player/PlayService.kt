@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Bitmap
+import android.os.Binder
 import android.os.Handler
 import android.os.IBinder
 import com.facebook.common.executors.CallerThreadExecutor
@@ -19,8 +20,8 @@ import com.facebook.imagepipeline.request.ImageRequest
 import com.google.android.exoplayer.ExoPlaybackException
 import com.google.android.exoplayer.ExoPlayer
 import com.smilehacker.iocast.Constants
-import com.smilehacker.iocast.model.manager.PodcastManager
 import com.smilehacker.iocast.model.wrap.PodcastWrap
+import com.smilehacker.iocast.store.PodcastStore
 import com.smilehacker.iocast.util.DLog
 
 /**
@@ -38,6 +39,7 @@ class PlayService : Service(), ExoPlayer.Listener {
     }
 
 
+
     private var mPlayer : Player = Player(this)
     private val mHandler : Handler = Handler()
 
@@ -50,7 +52,7 @@ class PlayService : Service(), ExoPlayer.Listener {
     }
 
     override fun onBind(intent: Intent?): IBinder? {
-        throw UnsupportedOperationException()
+        return PlayServiceBinder()
     }
 
     override fun onCreate() {
@@ -65,29 +67,29 @@ class PlayService : Service(), ExoPlayer.Listener {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val command = intent?.getIntExtra(Constants.KEY_PLAY_SERVICE_COMMAND, COMMAND.STOP)
-        when(command) {
-            COMMAND.PREPARE -> {
-                val podcastItemId = intent?.getLongExtra(Constants.KEY_PODCAST_ITEM_ID, -1L)
-                if (podcastItemId != -1L) {
-                    mPodcastWrap = PodcastManager.getPodcastWrap(podcastItemId!!)
-                    if (mPodcastWrap == null) {
-                        stop()
-                    } else {
-                        prepare()
-                    }
-                } else {
-                    stop()
-                }
-            }
-            COMMAND.START -> {
-                start()
-            }
-            COMMAND.PAUSE -> {
-                pause()
-            }
-            COMMAND.STOP -> stop()
-        }
+//        val command = intent?.getIntExtra(Constants.KEY_PLAY_SERVICE_COMMAND, COMMAND.STOP)
+//        when(command) {
+//            COMMAND.PREPARE -> {
+//                val podcastItemId = intent?.getLongExtra(Constants.KEY_PODCAST_ITEM_ID, -1L)
+//                if (podcastItemId != -1L) {
+//                    mPodcastWrap = PodcastStore.getPodcastWrap(podcastItemId!!)
+//                    if (mPodcastWrap == null) {
+//                        stop()
+//                    } else {
+//                        prepare()
+//                    }
+//                } else {
+//                    stop()
+//                }
+//            }
+//            COMMAND.START -> {
+//                start()
+//            }
+//            COMMAND.PAUSE -> {
+//                pause()
+//            }
+//            COMMAND.STOP -> stop()
+//        }
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -98,7 +100,8 @@ class PlayService : Service(), ExoPlayer.Listener {
         }
     }
 
-    private fun prepare() {
+    fun prepare(podcastItemId : Long) {
+        mPodcastWrap = PodcastStore.getPodcastWrap(podcastItemId)
         mPodcastWrap?.podcastItem?.fileUrl?.let {
             mPlayer.prepare(it)
             refreshNotification()
@@ -106,7 +109,7 @@ class PlayService : Service(), ExoPlayer.Listener {
     }
 
 
-    private fun start() {
+    fun start() {
         DLog.d("start")
         mPodcastWrap?.let {
             mPlayer.start(it.podcastItem.playedTime)
@@ -114,24 +117,25 @@ class PlayService : Service(), ExoPlayer.Listener {
         }
     }
 
-    private fun pause() {
+    fun pause() {
         DLog.d("pause")
         mPlayer.pause()
         mPodcastWrap?.podcastItem?.updatePlayedTime(mPlayer.getCurrentPosition())
         refreshNotification()
     }
 
-    private fun seekTo(pos : Long) {
+    fun seekTo(pos : Long) {
         mPlayer.seekTo(pos)
         refreshNotification()
     }
 
-    private fun stop() {
+    fun stop() {
         mHandler.removeCallbacks(mGetPlayInfoRunnable)
         pause()
         mPlayer.release()
-        broadcastPlayingInfo()
+
         stopSelf()
+        PlayController.unbindPlaySerivce()
     }
 
 
@@ -199,7 +203,7 @@ class PlayService : Service(), ExoPlayer.Listener {
 
     private fun broadcastPlayingInfo() {
         mPodcastWrap?.let {
-            PlayManager.postPlayState(it, mPlayer.isPlaying())
+            PlayController.postPlayState(it, mPlayer.isPlaying())
         }
     }
 
@@ -242,6 +246,12 @@ class PlayService : Service(), ExoPlayer.Listener {
         override fun onFailureImpl(dataSource: DataSource<CloseableReference<CloseableImage>>?) {
             val t = dataSource?.failureCause
             DLog.e(t)
+        }
+    }
+
+    inner class PlayServiceBinder : Binder() {
+        fun getService() : PlayService {
+            return this@PlayService
         }
     }
 

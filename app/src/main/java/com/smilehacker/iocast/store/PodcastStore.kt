@@ -1,4 +1,4 @@
-package com.smilehacker.iocast.model.manager
+package com.smilehacker.iocast.store
 
 import com.smilehacker.iocast.model.Podcast
 import com.smilehacker.iocast.model.PodcastItem
@@ -7,7 +7,7 @@ import com.smilehacker.iocast.model.wrap.PodcastWrap
 /**
  * Created by kleist on 16/4/4.
  */
-object PodcastManager {
+object PodcastStore {
 
     fun getPodcastWithItems(id : Long) : Podcast? {
         return Podcast.getWithItems(id)
