@@ -50,4 +50,5 @@ class MainActivity : HostActivity() {
         mVBottomPlayer.onPause()
     }
 
+
 }

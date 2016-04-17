@@ -50,7 +50,10 @@ class BottomPlayerView : RelativeLayout, BottomPlayerViewer {
 
     private fun init() {
         LayoutInflater.from(context).inflate(R.layout.bottom_player, this)
-        this.visibility = GONE
+        initUI()
+    }
+
+    private fun initUI() {
     }
 
 
@@ -87,6 +90,15 @@ class BottomPlayerView : RelativeLayout, BottomPlayerViewer {
 
     override fun onPause() {
         mPresenter.detachView(false)
+    }
+
+
+    override fun show(show: Boolean) {
+        if (show) {
+            this.visibility = VISIBLE
+        } else {
+            this.visibility = GONE
+        }
     }
 
 

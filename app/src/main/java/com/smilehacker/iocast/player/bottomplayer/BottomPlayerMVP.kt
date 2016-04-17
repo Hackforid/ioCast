@@ -12,8 +12,12 @@ interface BottomPlayerViewer : Viewer {
     fun updateBottomPlayer(wrap: PodcastWrap)
     fun onResume()
     fun onPause()
+
+    fun show(show : Boolean)
 }
 
 abstract class BottomPlayerPresenter : BasePresenter<BottomPlayerViewer>() {
     abstract fun shouldShow() : Boolean
+    abstract fun showPodcastItem()
+    abstract fun getCurrentPodcast() : PodcastWrap?
 }

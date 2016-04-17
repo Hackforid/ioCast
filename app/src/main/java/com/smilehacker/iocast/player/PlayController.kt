@@ -35,7 +35,8 @@ object PlayController : ServiceConnection {
     const val SIMPLE_STATE_STOP = 3
 
     var mPlayService : PlayService? = null
-    var hideBottomPlayer = true
+    var mHideBottomPlayer = true
+    var mPlayerFragmentShow = false
 
     var mPubSubscription : PublishSubject<PlayService> = PublishSubject.create()
 
@@ -59,6 +60,7 @@ object PlayController : ServiceConnection {
         } else {
             prepareFunc(mPlayService!!)
         }
+        saveLastPlayItem(podcastItemId)
     }
 
     fun prepareAndStart(podcastItemId: Long) {
@@ -71,6 +73,7 @@ object PlayController : ServiceConnection {
         } else {
             prepareFunc(mPlayService!!)
         }
+        saveLastPlayItem(podcastItemId)
     }
 
     fun start() {
@@ -105,4 +108,11 @@ object PlayController : ServiceConnection {
     }
 
 
+    fun setIsPlayFragmentShow(show : Boolean) {
+        mPlayerFragmentShow = show
+    }
+
+    private fun saveLastPlayItem(podcastItemId: Long) {
+        UserStore.lastPodcastItemId = podcastItemId
+    }
 }
