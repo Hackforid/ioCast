@@ -4,6 +4,7 @@ import com.smilehacker.iocast.model.event.UIEvent
 import com.smilehacker.iocast.model.wrap.PodcastWrap
 import com.smilehacker.iocast.player.PlayController
 import com.smilehacker.iocast.ui.UIController
+import com.smilehacker.iocast.util.DLog
 import com.smilehacker.iocast.util.RxBus
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
@@ -17,11 +18,13 @@ class BottomPlayerPresenterImpl : BottomPlayerPresenter() {
     private lateinit var mPlayerSubscription : Subscription
     private lateinit var mUISubscription : Subscription
 
+    private var mCurrentPodcast : PodcastWrap? = null
+
     override fun attachView(view: BottomPlayerViewer) {
         super.attachView(view)
         refreshUI()
         mPlayerSubscription = RxBus.toObservable(PodcastWrap::class.java)
-                .subscribe { view.updateBottomPlayer(it) }
+                .subscribe { this.view?.updateBottomPlayer(it) }
         mUISubscription = RxBus.toObservable(UIEvent::class.java)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { e -> onUIEvent(e) }
@@ -47,6 +50,7 @@ class BottomPlayerPresenterImpl : BottomPlayerPresenter() {
 
 
     private fun onUIEvent(event : UIEvent) {
+        DLog.d("UI event = $event")
         when(event.type) {
             UIEvent.TYPE_SHOW_BOTTOM_PLAYER -> {
                 if (event.value == UIEvent.SHOW_BOTTOM_PLAYER) {
@@ -69,6 +73,18 @@ class BottomPlayerPresenterImpl : BottomPlayerPresenter() {
 
     override fun getCurrentPodcast(): PodcastWrap? {
         val podcastWrap = PlayController.getLastPodcastWrap()
+        mCurrentPodcast = podcastWrap
         return podcastWrap
+    }
+
+    override fun play(play: Boolean) {
+        DLog.d("play = $play")
+        if (play) {
+            if (mCurrentPodcast != null) {
+                PlayController.play(mCurrentPodcast!!.podcastItem.podcastID)
+            }
+        } else {
+            PlayController.pause()
+        }
     }
 }

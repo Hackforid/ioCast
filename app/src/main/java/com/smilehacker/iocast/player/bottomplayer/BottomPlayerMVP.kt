@@ -20,4 +20,5 @@ abstract class BottomPlayerPresenter : BasePresenter<BottomPlayerViewer>() {
     abstract fun shouldShow() : Boolean
     abstract fun showPodcastItem()
     abstract fun getCurrentPodcast() : PodcastWrap?
+    abstract fun play(play : Boolean)
 }

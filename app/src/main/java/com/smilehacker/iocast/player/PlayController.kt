@@ -32,7 +32,6 @@ object PlayController : ServiceConnection {
 
     const val SIMPLE_STATE_PLAYING = 1
     const val SIMPLE_STATE_PAUSE = 2
-    const val SIMPLE_STATE_STOP = 3
 
     var mPlayService : PlayService? = null
     var mHideBottomPlayer = true
@@ -84,6 +83,24 @@ object PlayController : ServiceConnection {
         mPlayService?.pause()
     }
 
+    fun play(podcastItemId: Long) {
+        DLog.d("play")
+        val playFunc : (PlayService)-> Unit = {service -> service.play(podcastItemId)}
+        if (mPlayService == null) {
+            bindPlayService()
+            mPubSubscription.subscribe({
+                playFunc(it)
+            })
+        } else {
+            playFunc(mPlayService!!)
+        }
+        saveLastPlayItem(podcastItemId)
+    }
+
+    fun seekTo(time : Long) {
+        mPlayService?.let { it.seekTo(time) }
+    }
+
     fun stop() {
         mPlayService?.stop()
         unbindPlaySerivce()
@@ -100,7 +117,11 @@ object PlayController : ServiceConnection {
         if (lastPodcastId == -1L) {
             return null
         }
-        return PodcastStore.getPodcastWrap(lastPodcastId)
+        val wrap = PodcastStore.getPodcastWrap(lastPodcastId)
+        if (mPlayService != null && wrap!= null) {
+            wrap.playState = if (mPlayService!!.isPlaying()) SIMPLE_STATE_PLAYING else SIMPLE_STATE_PAUSE
+        }
+        return wrap
     }
 
     fun setLastPodcastItemId(id : Long) {

@@ -9,6 +9,6 @@ data class UIEvent(val type : Int, val value : Int) {
         val TYPE_SHOW_BOTTOM_PLAYER = 1
 
         val SHOW_BOTTOM_PLAYER = 1
-        val HIDE_BOTTOM_PLAYER = 1
+        val HIDE_BOTTOM_PLAYER = 2
     }
 }

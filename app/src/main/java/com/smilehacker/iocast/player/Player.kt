@@ -100,7 +100,7 @@ class Player(val ctx : Context) : ExoPlayer.Listener {
     }
 
     fun getCurrentPosition() : Long {
-        return if (mPlayer.currentPosition != ExoPlayer.UNKNOWN_TIME) mPlayer.currentPosition else 0
+        return if (mPlayer.currentPosition != ExoPlayer.UNKNOWN_TIME) mPlayer.currentPosition / 1000 else 0
     }
 
 

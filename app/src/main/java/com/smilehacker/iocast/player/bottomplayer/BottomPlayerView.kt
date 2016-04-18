@@ -4,7 +4,6 @@ import android.content.Context
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
@@ -30,6 +29,8 @@ class BottomPlayerView : RelativeLayout, BottomPlayerViewer {
     private val mBtnPlay by bindView<ImageView>(R.id.btn_play)
     private val mProgressBar by bindView<ProgressBar>(R.id.progress)
 
+    private var mPodcast : PodcastWrap? = null
+
     private val mPresenter: BottomPlayerPresenter  by lazy { BottomPlayerPresenterImpl() }
 
     constructor(context: Context?) : super(context) {
@@ -54,11 +55,32 @@ class BottomPlayerView : RelativeLayout, BottomPlayerViewer {
     }
 
     private fun initUI() {
+        refreshUI()
     }
 
+    private fun refreshUI() {
+        if (mPodcast == null) {
+            return
+        }
+        when(mPodcast!!.playState) {
+            PlayController.SIMPLE_STATE_PLAYING -> {
+                mBtnPlay.onClick {
+                    mBtnPlay.setImageResource(R.drawable.play_circle_outline)
+                    PlayController.pause() }
+                mBtnPlay.setImageResource(R.drawable.pause_circle_outline)
+            }
+            PlayController.SIMPLE_STATE_PAUSE -> {
+                mBtnPlay.onClick {
+                    mBtnPlay.setImageResource(R.drawable.pause_circle_outline)
+                    PlayController.play(mPodcast!!.podcastItem.id) }
+                mBtnPlay.setImageResource(R.drawable.play_circle_outline)
+            }
+        }
+    }
 
     override fun updateBottomPlayer(wrap: PodcastWrap) {
         DLog.d("wrap = $wrap")
+        mPodcast = wrap
         mIvAvatar.setImageUrl(wrap.podcast.image, context)
         mTvTitle.text = wrap.podcastItem.title
         mTvAuthor.text = if (!TextUtils.isEmpty(wrap.podcastItem.author)) wrap.podcastItem.author else wrap.podcast.author
@@ -67,21 +89,8 @@ class BottomPlayerView : RelativeLayout, BottomPlayerViewer {
         } else{
             mProgressBar.progress = (wrap.podcastItem.playedTime / wrap.podcastItem.duration * 100f).toInt()
         }
-        when(wrap.playState) {
-            PlayController.SIMPLE_STATE_PLAYING -> {
-                this.visibility = View.VISIBLE
-                mBtnPlay.onClick { PlayController.pause() }
-                mBtnPlay.setImageResource(R.drawable.pause_circle_outline)
-            }
-            PlayController.SIMPLE_STATE_PAUSE -> {
-                this.visibility = View.VISIBLE
-                mBtnPlay.onClick { PlayController.start() }
-                mBtnPlay.setImageResource(R.drawable.play_circle_outline)
-            }
-            PlayController.SIMPLE_STATE_STOP -> {
-                this.visibility = View.GONE
-            }
-        }
+
+        refreshUI()
     }
 
     override fun onResume() {

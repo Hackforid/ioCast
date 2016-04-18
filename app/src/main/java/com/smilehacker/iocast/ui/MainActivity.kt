@@ -5,8 +5,11 @@ import butterknife.bindView
 import com.smilehacker.iocast.R
 import com.smilehacker.iocast.base.newFragment
 import com.smilehacker.iocast.player.bottomplayer.BottomPlayerView
+import com.smilehacker.iocast.player.playui.PlayerFragment
 import com.smilehacker.iocast.rsslist.RssListFragment
 import com.smilehacker.megatron.HostActivity
+import com.smilehacker.megatron.KitFragment
+import org.jetbrains.anko.onClick
 
 /**
  * Created by kleist on 16/3/16.
@@ -29,6 +32,9 @@ class MainActivity : HostActivity() {
     }
 
     private fun initUI() {
+        mVBottomPlayer.onClick {
+            startFragment(PlayerFragment(), KitFragment.SINGLETOP)
+        }
     }
 
     override fun getContainerID(): Int {

@@ -39,6 +39,9 @@
             android:layout_marginTop="30dp"
             android:textSize="@dimen/common_textsize_t4"
             android:textColor="@color/text_level1_color"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:gravity="center"
             />
         <TextView
             android:id="@+id/tv_author"
@@ -50,6 +53,7 @@
             android:textSize="@dimen/common_textsize_t2"
             android:textColor="@color/text_level2_color"
             android:layout_below="@id/tv_title"
+            android:gravity="center"
             />
 
         <LinearLayout
@@ -66,6 +70,7 @@
                 android:scaleType="fitCenter"
                 />
             <ImageView
+                android:id="@+id/btn_play"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:src="@drawable/play_black"
@@ -84,12 +89,13 @@
 
     </RelativeLayout>
 
-    <ProgressBar
+    <SeekBar
         android:id="@+id/progress"
         android:layout_width="match_parent"
-        android:layout_height="3dp"
+        android:layout_height="wrap_content"
         android:layout_above="@id/vg_bottom"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:max="1000"
+        android:progress="0"
         />
 
 </android.support.percent.PercentRelativeLayout>

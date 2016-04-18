@@ -117,6 +117,15 @@ class PlayService : Service(), ExoPlayer.Listener {
         }
     }
 
+    fun play(podcastItemId: Long) {
+        if (mPodcastWrap?.podcastItem?.id == podcastItemId) {
+            start()
+        } else {
+            prepare(podcastItemId)
+            start()
+        }
+    }
+
     fun pause() {
         DLog.d("pause")
         mPlayer.pause()
@@ -125,7 +134,8 @@ class PlayService : Service(), ExoPlayer.Listener {
     }
 
     fun seekTo(pos : Long) {
-        mPlayer.seekTo(pos)
+        DLog.d("seekTo $pos")
+        mPlayer.seekTo(pos * 1000)
         refreshNotification()
     }
 
@@ -138,6 +148,9 @@ class PlayService : Service(), ExoPlayer.Listener {
         PlayController.unbindPlaySerivce()
     }
 
+    fun isPlaying() : Boolean {
+        return mPlayer.isPlaying()
+    }
 
     fun showNotification(isPlaying : Boolean = false) : Notification? {
         mPodcastWrap?.let {
@@ -156,10 +169,10 @@ class PlayService : Service(), ExoPlayer.Listener {
                 showNotification(false)
             }
             ExoPlayer.STATE_PREPARING -> {
-                showNotification(false)
+                showNotification(true)
             }
             ExoPlayer.STATE_BUFFERING-> {
-                showNotification(false)
+                showNotification(true)
             }
             ExoPlayer.STATE_READY -> {
                 showNotification(true)
