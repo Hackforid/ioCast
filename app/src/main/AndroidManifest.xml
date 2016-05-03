@@ -17,14 +17,16 @@
         >
 
         <meta-data android:name="AA_DB_NAME" android:value="iocast.db" />
-        <meta-data android:name="AA_DB_VERSION" android:value="1" />
+        <meta-data android:name="AA_DB_VERSION" android:value="2" />
         <meta-data android:name="AA_SERIALIZERS"
                    android:value="com.smilehacker.iocast.util.db.DateTimeSerializer" />
         <meta-data
             android:name="AA_MODELS"
             android:value="com.smilehacker.iocast.model.Podcast,
                            com.smilehacker.iocast.model.PodcastItem,
-                           com.smilehacker.iocast.model.DownloadInfo" />
+                           com.smilehacker.iocast.model.DownloadInfo,
+                           com.smilehacker.iocast.model.PlayList"
+            />
 
         <activity
             android:name=".ui.MainActivity"

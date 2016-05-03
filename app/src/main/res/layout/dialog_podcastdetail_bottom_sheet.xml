@@ -36,6 +36,17 @@
             android:layout_marginTop="10dp"
             android:layout_marginLeft="15dp"
             />
+
+        <ImageView
+            android:id="@+id/btn_play_list_op"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/playlist_plus_white"
+            android:scaleType="fitCenter"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="18dp"
+            />
     </RelativeLayout>
 
     <android.support.design.widget.FloatingActionButton
@@ -45,6 +56,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="20dp"
         android:layout_marginTop="92dp"
+        android:src="@drawable/play_white"
         />
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"

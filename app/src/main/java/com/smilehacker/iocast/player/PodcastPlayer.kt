@@ -14,7 +14,6 @@ import com.google.android.exoplayer.extractor.ExtractorSampleSource
 import com.google.android.exoplayer.upstream.DefaultAllocator
 import com.google.android.exoplayer.upstream.DefaultBandwidthMeter
 import com.google.android.exoplayer.upstream.DefaultUriDataSource
-import com.smilehacker.iocast.net.ProxyManager
 import com.smilehacker.iocast.util.DLog
 
 /**
@@ -39,8 +38,8 @@ class PodcastPlayer(val ctx : Context) {
         DLog.d("cache dir = " + ctx.cacheDir.path)
         val url = "http://ipn.li/itgonglun/178/audio.mp3"
         //val url = "http://192.168.205.43:8000/%E5%BF%83%E5%81%9A%E3%81%9714.mp3"
-        val uri = ProxyManager.httpProxyServer.getProxyUrl(url)
-        val sampleSource = ExtractorSampleSource(Uri.parse(uri),
+        //val uri = ProxyManager.httpProxyServer.getProxyUrl(url)
+        val sampleSource = ExtractorSampleSource(Uri.parse(url),
                 dataSource, allocator,
                 65536 * 256)
         val audioRender = MediaCodecAudioTrackRenderer(sampleSource, null, true,

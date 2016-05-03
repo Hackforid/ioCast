@@ -1,19 +1,15 @@
 package com.smilehacker.iocast
 
 import android.app.Application
-import com.activeandroid.ActiveAndroid
-import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.stetho.Stetho
-import com.smilehacker.iocast.net.NetEngine
-import com.smilehacker.iocast.net.ProxyManager
-import com.smilehacker.iocast.net.myokhttp.OkHttp3ImagePipelineConfigFactory
-import net.danlew.android.joda.JodaTimeAndroid
+import com.smilehacker.iocast.base.loader.BootLoader
+import com.smilehacker.iocast.base.loader.PlayListLoader
+import com.smilehacker.iocast.store.UserStore
 
 /**
  * Created by kleist on 15/11/9.
  */
 
-public class App : Application() {
+class App : Application() {
 
 
     companion object {
@@ -26,19 +22,21 @@ public class App : Application() {
         init()
     }
 
-    fun init() {
-        Stetho.initializeWithDefaults(this);
-        JodaTimeAndroid.init(this)
-        ActiveAndroid.initialize(this)
-        initFresco()
-        ProxyManager.init(this)
+    private fun init() {
+        processBoot()
+        processFirstBoot()
     }
 
-    fun initFresco() {
-        // TODO
-        // fresco will support okhttp3 later https://github.com/facebook/fresco/issues/891
-        val config = OkHttp3ImagePipelineConfigFactory.newBuilder(this, NetEngine.getFrescoHttpClient()).build()
-        Fresco.initialize(this, config)
+    private fun processBoot() {
+        BootLoader().load()
     }
+
+    private fun processFirstBoot() {
+        if (UserStore.isFirstBoot) {
+            UserStore.isFirstBoot = false
+            PlayListLoader().load()
+        }
+    }
+
 
 }

@@ -4,9 +4,9 @@ import android.os.Bundle
 import butterknife.bindView
 import com.smilehacker.iocast.R
 import com.smilehacker.iocast.base.newFragment
-import com.smilehacker.iocast.player.bottomplayer.BottomPlayerView
-import com.smilehacker.iocast.player.playui.PlayerFragment
-import com.smilehacker.iocast.rsslist.RssListFragment
+import com.smilehacker.iocast.ui.bottomplayer.BottomPlayerView
+import com.smilehacker.iocast.ui.playui.PlayerFragment
+import com.smilehacker.iocast.ui.index.RssListFragment
 import com.smilehacker.megatron.HostActivity
 import com.smilehacker.megatron.KitFragment
 import org.jetbrains.anko.onClick

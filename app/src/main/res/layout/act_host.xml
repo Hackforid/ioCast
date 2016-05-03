@@ -19,12 +19,12 @@
         android:layout_alignParentBottom="true"
         tools:background="@color/background_gray"
         >
-        <com.smilehacker.iocast.player.bottomplayer.BottomPlayerView
+        <com.smilehacker.iocast.ui.bottomplayer.BottomPlayerView
             android:id="@+id/bottom_player"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             >
-        </com.smilehacker.iocast.player.bottomplayer.BottomPlayerView>
+        </com.smilehacker.iocast.ui.bottomplayer.BottomPlayerView>
     </FrameLayout>
 
 </RelativeLayout>

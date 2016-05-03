@@ -4,7 +4,7 @@
           android:id="@+id/frg_detail"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
-          android:name="com.smilehacker.iocast.podcastDetail.PodcastDetailFragment"
+          android:name="com.smilehacker.iocast.ui.podcastDetail.PodcastDetailFragment"
           tools:layout="@layout/fpodcastdetail_frg"
     >
 
